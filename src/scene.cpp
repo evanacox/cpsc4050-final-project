@@ -39,27 +39,20 @@ GameObject* Scene::add_object(std::unique_ptr<GameObject> object) noexcept {
 }
 
 void Scene::setup(GLContext& gl) noexcept {
+  assert(player_ != nullptr && "must have player object set before first draw");
+
+  view_matrix_ = glm::lookAt(camera_position_, player_->position(), camera_up_);
+
   for (auto& object : objects_) {
     object->setup(gl);
   }
 }
 
 void Scene::draw_everything(GLContext& gl, const glm::mat4& proj) noexcept {
-  // we compute our first camera matrix here, and store it
-  static auto view = glm::lookAt(camera_position_, player_->position(), camera_up_);
-  static auto prev_position = camera_position_;
-
-  assert(player_ != nullptr && "must have player object set before first draw");
-
-  // if we've moved the camera, we apply a translation for it and store that
-  // as the new matrix. this ensures the translations are consistent
-  if (prev_position != camera_position_) {
-    view = glm::translate(view, camera_position_ - prev_position);
-    prev_position = camera_position_;
-  }
+  handle_keypress(GLFW_KEY_LEFT);
 
   for (auto& object : objects_) {
-    object->load_uniforms(gl, proj, view);
+    object->load_uniforms(gl, proj, view_matrix_);
     object->draw(gl);
   }
 }
@@ -73,19 +66,19 @@ void Scene::handle_keypress(int key) noexcept {
   switch (key) {
   case GLFW_KEY_LEFT:
     player_->translate(LEFT);
-    camera_position_ = camera_position_ + LEFT;
+    view_matrix_ = glm::translate(view_matrix_, LEFT);
     break;
   case GLFW_KEY_RIGHT:
     player_->translate(RIGHT);
-    camera_position_ = camera_position_ + RIGHT;
+    view_matrix_ = glm::translate(view_matrix_, RIGHT);
     break;
   case GLFW_KEY_DOWN:
     player_->translate(DOWN);
-    camera_position_ = camera_position_ + DOWN;
+    view_matrix_ = glm::translate(view_matrix_, DOWN);
     break;
   case GLFW_KEY_UP:
     player_->translate(UP);
-    camera_position_ = camera_position_ + UP;
+    view_matrix_ = glm::translate(view_matrix_, UP);
     break;
   default:
     break;

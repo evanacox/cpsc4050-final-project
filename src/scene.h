@@ -159,6 +159,7 @@ public:
 private:
   std::vector<std::unique_ptr<GameObject>> objects_;
   GameObject* player_ = nullptr;
+  glm::mat4 view_matrix_;
   glm::vec3 camera_position_;
   glm::vec3 camera_up_;
 };

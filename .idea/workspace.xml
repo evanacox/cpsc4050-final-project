@@ -24,10 +24,6 @@
     <list default="true" id="2bac2024-4cba-4dd8-b33c-316a0295d8f7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/background.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/background.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/background.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/background.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.h" afterDir="false" />
     </list>
@@ -147,7 +143,7 @@
       <workItem from="1732630184388" duration="575000" />
       <workItem from="1732630764490" duration="14550000" />
       <workItem from="1732660552235" duration="3452000" />
-      <workItem from="1732729013565" duration="2200000" />
+      <workItem from="1732729013565" duration="3552000" />
     </task>
     <servers />
   </component>
@@ -169,7 +165,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/scene.cpp</url>
-          <line>72</line>
+          <line>65</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
