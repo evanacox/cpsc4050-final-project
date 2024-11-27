@@ -16,7 +16,7 @@
 class Window {
 public:
   /// Initializes and creates the GLFW window
-  explicit Window(std::string window_title) noexcept;
+  explicit Window(std::string window_title, Scene& scene) noexcept;
 
   /// Callback used by GLFW3
   void glfw_key_callback(int key, int scancode, int action, int mods) noexcept;
@@ -34,12 +34,13 @@ public:
   /// Enters a draw loop until the window is closed. This is called from `main`
   ///
   /// \return A return value for the program
-  [[nodiscard]] int loop_until_done(GLContext& context, Scene& scene) noexcept;
+  [[nodiscard]] int loop_until_done(GLContext& context) noexcept;
 
 private:
   void update_fps_counter() noexcept;
 
   GLFWwindow* window_;
+  Scene& scene_;
   std::string window_title_;
   int framebuffer_width_ = 0;
   int framebuffer_height_ = 0;

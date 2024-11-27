@@ -34,8 +34,9 @@ public:
   /// will simply be copied in.
   ///
   /// \param gl The OpenGL state
-  virtual void load_uniforms(GLContext& gl, const glm::mat4& proj,
-                             const glm::mat4& view) noexcept;
+  /// \return The shader being used by the object, can be used by derived instances
+  virtual GLuint load_uniforms(GLContext& gl, const glm::mat4& proj,
+                               const glm::mat4& view) noexcept;
 
   /// Tells the GameObject to draw itself as if it was inside the render loop.
   ///
@@ -100,6 +101,11 @@ public:
   ///
   /// \param by The amount to translate by
   void translate_camera(glm::vec3 by) noexcept { camera_position_ += by; }
+
+  /// Handles a keypress from the window
+  ///
+  /// \param key The key to handle
+  void handle_keypress(int key) noexcept;
 
 private:
   std::vector<std::unique_ptr<GameObject>> objects_;

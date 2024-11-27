@@ -21,18 +21,18 @@ void keyboard_callback(GLFWwindow*, int key, int scancode, int action, int mods)
   window->glfw_key_callback(key, scancode, action, mods);
 }
 
-std::string to_string_with_precision(double value, int precision) {
+std::string to_string_two_decimals(double value) {
   auto buf = std::array<char, 64>{};
   auto [ptr, _] =
-      std::to_chars(buf.data(), buf.data() + 64, value, std::chars_format::general);
+      std::to_chars(buf.data(), buf.data() + 64, value, std::chars_format::general, 2);
 
   return {buf.data(), static_cast<std::size_t>(ptr - buf.data())};
 }
 
 } // namespace
 
-Window::Window(std::string window_title) noexcept
-    : window_title_{std::move(window_title)} {
+Window::Window(std::string window_title, Scene& scene) noexcept
+    : scene_{scene}, window_title_{std::move(window_title)} {
   window = this;
   window_ = glfwCreateWindow(800, 600, "CPSC4050 Final Project", //
                              nullptr, nullptr);
@@ -52,15 +52,18 @@ Window::Window(std::string window_title) noexcept
   glewInit();
 }
 
-void Window::glfw_key_callback(int key, int scancode, int action, int mods) noexcept {
-  // TODO: do stuff with keystrokes
+void Window::glfw_key_callback(int key, [[maybe_unused]] int scancode, int action,
+                               [[maybe_unused]] int mods) noexcept {
+  if (action == GLFW_PRESS) {
+    scene_.handle_keypress(key);
+  }
 }
 
 void Window::setup() noexcept {
   glfwGetFramebufferSize(window_, &framebuffer_width_, &framebuffer_height_);
 }
 
-int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
+int Window::loop_until_done(GLContext& gl) noexcept {
   auto aspect_ratio = static_cast<float>(width()) / static_cast<float>(height());
   auto proj = glm::perspective(35.0f, aspect_ratio, 0.1f, 100.0f);
 
@@ -69,7 +72,7 @@ int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
 
     // clear the screen and redraw everything
     gl.clear_enabled_buffers();
-    scene.draw_everything(gl, proj);
+    scene_.draw_everything(gl, proj);
 
     // make sure we caught all the events
     glfwPollEvents();
@@ -94,7 +97,7 @@ void Window::update_fps_counter() noexcept {
     previous_seconds = current_seconds;
     auto fps = static_cast<double>(frame_count) / elapsed_seconds;
     auto rounded = std::ceil(fps * 100.0) / 100.0;
-    auto title = window_title_ + " (fps: " + to_string_with_precision(rounded, 2) + ")";
+    auto title = window_title_ + " (fps: " + to_string_two_decimals(rounded) + ")";
 
     glfwSetWindowTitle(window_, title.c_str());
     frame_count = 0;

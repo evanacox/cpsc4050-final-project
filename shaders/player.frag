@@ -14,5 +14,5 @@ in vec2 texture_uv;
 out vec4 fragment_color;
 
 void main() {
-    fragment_color = model_vertex;
+    fragment_color = vec4(0.7, 0.3, 0.6, 1.0);
 }

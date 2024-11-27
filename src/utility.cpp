@@ -5,8 +5,22 @@
 //                                                                           //
 //======---------------------------------------------------------------======//
 
-#include "./ground.h"
+#include "./utility.h"
 
-void Ground::setup(GLContext& gl) noexcept {}
+std::vector<glm::vec3> rectangle_vertices(float width, float height, float z,
+                                          glm::vec3 center) {
 
-void Ground::draw(GLContext& gl) noexcept {}
+  auto p1 = center + glm::vec3{-width, height, z};
+  auto p2 = center + glm::vec3{-width, -height, z};
+  auto p3 = center + glm::vec3{width, -height, z};
+  auto p4 = center + glm::vec3{width, height, z};
+
+  //
+  //  p1---p4
+  //  | \  |
+  //  |  \ |
+  //  |   \|
+  //  p2--p3
+  //
+  return {p1, p2, p3, p1, p3, p4};
+}

@@ -96,7 +96,7 @@ void GLContext::setup(int framebuffer_width, int framebuffer_height) noexcept {
   glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 
   // set our viewport to be the framebuffer size we got
-  glViewport(0, 0, framebuffer_width, framebuffer_height);
+  //  glViewport(0, 0, framebuffer_width, framebuffer_height);
 
   std::clog << "OpenGL version supported: " << glGetString(GL_VERSION) << "\n";
   std::clog << "Renderer: " << glGetString(GL_RENDERER) << "\n";
