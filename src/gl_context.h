@@ -11,6 +11,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <limits>
+#include <span>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
@@ -43,6 +44,14 @@ public:
   /// \param name The name previously associated with the VAO
   void bind_vao(const std::string& name) noexcept;
 
+  /// Combines the create/bind operations into one call
+  ///
+  /// \param name The name for the VAO
+  void create_and_bind_vao(const std::string& name) noexcept {
+    create_vao(name);
+    bind_vao(name);
+  }
+
   /// Creates a VBO and returns it
   ///
   /// \param count The number of VBOs to create
@@ -56,8 +65,7 @@ public:
   /// \param index The index to enable the VBO at
   /// \param data The data to be loaded
   template <typename Vec>
-  static void fill_enable_vbo(GLuint vbo, int index,
-                              const std::vector<Vec>& data) noexcept {
+  void fill_enable_vbo(GLuint vbo, int index, const std::vector<Vec>& data) noexcept {
     static_assert(std::is_same_v<typename Vec::value_type, float>,
                   "this code needs to be adapted for different vector types");
 
@@ -72,10 +80,10 @@ public:
   /// program with a name that can be used to enable/disable it.
   ///
   /// \param name The name to give the shader program
-  /// \param vert A string containing the GLSL code for the vertex shader
-  /// \param frag A string containing the GLSL code for the fragment shader
-  void create_shader_program(std::string name, const std::string& vert,
-                             const std::string& frag) noexcept;
+  /// \param vert_file The name of the file containing the vertex shader GLSL code
+  /// \param frag_file The name of the file containing the fragment shader GLSL code
+  void create_shader_program(std::string name, std::string vert_file,
+                             std::string frag_file) noexcept;
 
   /// Enables a shader program that was previously created
   ///
@@ -92,14 +100,15 @@ private:
   /// `data` contains `vec3`, this will be `3`)
   /// \param data Pointer to the raw data
   /// \param size_bytes The size, in bytes, of the data array
-  static void fill_enable_vbo_raw(GLuint vbo, int index, GLenum type,
-                                  int elements_per_vec, const void* data,
-                                  std::ptrdiff_t size_bytes) noexcept;
+  void fill_enable_vbo_raw(GLuint vbo, int index, GLenum type, int elements_per_vec,
+                           const void* data, std::ptrdiff_t size_bytes) noexcept;
 
   GLuint current_vao_ = std::numeric_limits<GLuint>::max();
   std::unordered_map<std::string, GLuint> vaos_;
   std::unordered_map<GLuint, std::vector<GLuint>> vbos_;
+  std::unordered_map<GLuint, std::vector<std::pair<GLuint, int>>> enabled_vbos_;
   std::unordered_map<std::string, GLuint> shaders_;
+  std::unordered_map<std::string, std::string> shader_file_;
 };
 
 #endif // PROJECT_GL_CONTEXT_H

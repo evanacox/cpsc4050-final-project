@@ -45,7 +45,7 @@ public:
   /// Translates the object by a given vector.
   ///
   /// \param by The amount to translate by
-  void translate(glm::vec3 by) noexcept;
+  void translate(glm::vec3 by) noexcept { position_ += by; }
 
   /// Gets the position of the GameObject.
   ///
@@ -57,9 +57,12 @@ protected:
   /// matrix.
   ///
   /// \param position The position of the object
-  explicit GameObject(glm::vec3 position) noexcept : position_{position} {}
+  explicit GameObject(glm::vec3 position, const char* shader_name) noexcept
+      : shader_name_{shader_name}, position_{position} {}
 
-private:
+  int vertex_len_ = 0;
+  int uv_len_ = 0;
+  const char* shader_name_;
   glm::vec3 position_;
 };
 
@@ -68,7 +71,7 @@ private:
 /// This contains a camera looking at the scene, and the scene itself.
 class Scene {
 public:
-  Scene(glm::vec3 camera_pos, glm::vec3 camera_up)
+  Scene(glm::vec3 camera_pos, glm::vec3 camera_up) noexcept
       : camera_position_{camera_pos}, camera_up_{camera_up} {}
 
   /// Adds an object to the scene
@@ -100,7 +103,7 @@ public:
 
 private:
   std::vector<std::unique_ptr<GameObject>> objects_;
-  GameObject* player_;
+  GameObject* player_ = nullptr;
   glm::vec3 camera_position_;
   glm::vec3 camera_up_;
 };

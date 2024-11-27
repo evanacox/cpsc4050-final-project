@@ -8,13 +8,21 @@
 #include "./scene.h"
 #include <cassert>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
                                const glm::mat4& view) noexcept {
-  // TODO: load projection and view matrix
-}
+  auto shader = gl.use_program(shader_name_);
+  auto model = glm::translate(glm::mat4{1.0f}, -position_);
 
-void GameObject::translate(glm::vec3 by) noexcept {}
+  auto model_uniform = glGetUniformLocation(shader, "model");
+  auto view_uniform = glGetUniformLocation(shader, "view");
+  auto proj_uniform = glGetUniformLocation(shader, "proj");
+
+  glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+  glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, glm::value_ptr(proj));
+}
 
 GameObject* Scene::add_object(std::unique_ptr<GameObject> object) noexcept {
   objects_.push_back(std::move(object));

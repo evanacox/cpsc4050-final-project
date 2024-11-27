@@ -73,6 +73,8 @@ int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
     glfwSwapBuffers(window_);
   }
 
+  glfwTerminate();
+
   return 0;
 }
 

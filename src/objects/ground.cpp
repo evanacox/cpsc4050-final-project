@@ -5,8 +5,8 @@
 //                                                                           //
 //======---------------------------------------------------------------======//
 
-#version 410
+#include "./ground.h"
 
-void main() {
+void Ground::setup(GLContext& gl) noexcept {}
 
-}
+void Ground::draw(GLContext& gl) noexcept {}
