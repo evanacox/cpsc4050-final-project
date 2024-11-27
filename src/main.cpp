@@ -23,7 +23,7 @@ void setup_game_world(Scene& scene) {
   auto* player = scene.add_object(std::move(o1));
   scene.set_player(player);
 
-  auto o2 = std::make_unique<Background>(glm::vec3{0.0f});
+  auto o2 = std::make_unique<Background>(glm::vec3{0.0f}, glm::vec2{50.0f, 15.0f});
   scene.add_object(std::move(o2));
 }
 

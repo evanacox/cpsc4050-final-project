@@ -26,6 +26,12 @@ GLuint GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
   return shader;
 }
 
+void GameObject::draw(GLContext& gl) noexcept {
+  gl.bind_vao(vao_name_);
+
+  glDrawArrays(GL_TRIANGLES, 0, vertex_count() * 3);
+}
+
 GameObject* Scene::add_object(std::unique_ptr<GameObject> object) noexcept {
   objects_.push_back(std::move(object));
 
@@ -85,3 +91,9 @@ void Scene::handle_keypress(int key) noexcept {
     break;
   }
 }
+
+NonUniqueGameObject::NonUniqueGameObject(glm::vec3 position,
+                                         const char* object_name) noexcept
+    : GameObject{position, object_name, object_name + std::to_string(counter++)} {}
+
+int NonUniqueGameObject::counter = 0;
