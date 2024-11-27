@@ -62,7 +62,7 @@ void Window::setup() noexcept {
 
 int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
   auto aspect_ratio = static_cast<float>(width()) / static_cast<float>(height());
-  auto proj = glm::perspective(70.0f, aspect_ratio, 0.1f, 100.0f);
+  auto proj = glm::perspective(35.0f, aspect_ratio, 0.1f, 100.0f);
 
   while (!glfwWindowShouldClose(window_)) {
     update_fps_counter();
