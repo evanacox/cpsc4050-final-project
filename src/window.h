@@ -21,6 +21,10 @@ public:
   /// Callback used by GLFW3
   void glfw_key_callback(int key, int scancode, int action, int mods) noexcept;
 
+  /// This shouldn't exist, but it does because GLFW is stupid and doesn't call the
+  /// callbacks it promises to.
+  void setup() noexcept;
+
   /// Returns the window width that should be used in OpenGL stuff
   [[nodiscard]] int width() const noexcept { return framebuffer_width_; }
 

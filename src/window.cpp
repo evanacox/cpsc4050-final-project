@@ -47,15 +47,20 @@ Window::Window(std::string window_title) noexcept
 
   // enable 4x MSAA, framebuffer will be 4x the size of our actual window
   glfwWindowHint(GLFW_SAMPLES, 4);
+
+  // enable GLEW now that we have an OpenGL context running
+  glewInit();
 }
 
 void Window::glfw_key_callback(int key, int scancode, int action, int mods) noexcept {
   // TODO: do stuff with keystrokes
 }
 
-int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
+void Window::setup() noexcept {
   glfwGetFramebufferSize(window_, &framebuffer_width_, &framebuffer_height_);
+}
 
+int Window::loop_until_done(GLContext& gl, Scene& scene) noexcept {
   auto aspect_ratio = static_cast<float>(width()) / static_cast<float>(height());
   auto proj = glm::perspective(70.0f, aspect_ratio, 0.1f, 100.0f);
 

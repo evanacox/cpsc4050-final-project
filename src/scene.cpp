@@ -39,7 +39,8 @@ void Scene::setup(GLContext& gl) noexcept {
 void Scene::draw_everything(GLContext& gl, const glm::mat4& proj) noexcept {
   assert(player_ != nullptr && "must have player object set before first draw");
 
-  auto view = glm::lookAt(camera_position_, player_->position(), camera_up_);
+  // auto view = glm::lookAt(camera_position_, player_->position(), camera_up_);
+  auto view = glm::translate(glm::mat4{1.0f}, -camera_position_);
 
   for (auto& object : objects_) {
     object->load_uniforms(gl, proj, view);

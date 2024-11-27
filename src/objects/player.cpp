@@ -8,25 +8,15 @@
 #include "./player.h"
 
 std::vector<glm::vec3> vertices = {
-    {-30.0f, -30.0f, -30.0f},                          // triangle 1 : begin
-    {-30.0f, -30.0f, 30.0f},  {-30.0f, 30.0f, 30.0f},  // triangle 1 : end
-    {30.0f, 30.0f, -30.0f},                            // triangle 2 : begin
-    {-30.0f, -30.0f, -30.0f}, {-30.0f, 30.0f, -30.0f}, // triangle 2 : end
-    {30.0f, -30.0f, 30.0f},   {-30.0f, -30.0f, -30.0f}, {30.0f, -30.0f, -30.0f},
-    {30.0f, 30.0f, -30.0f},   {30.0f, -30.0f, -30.0f},  {-30.0f, -30.0f, -30.0f},
-    {-30.0f, -30.0f, -30.0f}, {-30.0f, 30.0f, 30.0f},   {-30.0f, 30.0f, -30.0f},
-    {30.0f, -30.0f, 30.0f},   {-30.0f, -30.0f, 30.0f},  {-30.0f, -30.0f, -30.0f},
-    {-30.0f, 30.0f, 30.0f},   {-30.0f, -30.0f, 30.0f},  {30.0f, -30.0f, 30.0f},
-    {30.0f, 30.0f, 30.0f},    {30.0f, -30.0f, -30.0f},  {30.0f, 30.0f, -30.0f},
-    {30.0f, -30.0f, -30.0f},  {30.0f, 30.0f, 30.0f},    {30.0f, -30.0f, 30.0f},
-    {30.0f, 30.0f, 30.0f},    {30.0f, 30.0f, -30.0f},   {-30.0f, 30.0f, -30.0f},
-    {30.0f, 30.0f, 30.0f},    {-30.0f, 30.0f, -30.0f},  {-30.0f, 30.0f, 30.0f},
-    {30.0f, 30.0f, 30.0f},    {-30.0f, 30.0f, 30.0f},   {30.0f, -30.0f, 30.0f}};
-;
+    // clang-format off
+    {-1.0f, -1.0f, 0.0f}, {1.0f, -1.0f, 0.0f}, {-1.0f, 1.0f, 0.0f},
+    {-1.0f, 1.0f, 0.0f}, {1.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 0.0f}
+    // clang-format on
+};
 
 void Player::setup(GLContext& gl) noexcept {
+  gl.create_shader_program("player", "shaders/player.vert", "shaders/player.frag");
   gl.create_and_bind_vao("player");
-  gl.create_shader_program("player", "shaders/player.frag", "shaders/player.vert");
 
   auto buf = gl.create_vbos(2);
   auto vertex = buf[0];

@@ -33,7 +33,7 @@ GLuint create_and_compile_shader(const std::string& name, const std::string& con
   glGetShaderiv(shader, GL_COMPILE_STATUS, &params);
 
   if (params != GL_TRUE) {
-    auto suffix = (type == GL_VERTEX_SHADER) ? ".vert" : ".frag";
+    auto suffix = (type == GL_VERTEX_SHADER) ? "vert" : "frag";
 
     std::cerr << "error: shader '" << name << '.' << suffix << "' did not compile\n";
 
@@ -81,8 +81,6 @@ GLContext::GLContext() noexcept {
 }
 
 void GLContext::setup(int framebuffer_width, int framebuffer_height) noexcept {
-  glewInit();
-
   // enable depth testing, smaller Z-distance => "closer"
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);

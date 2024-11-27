@@ -31,10 +31,11 @@ int main() {
   auto window = Window{"CPSC4050 Final Project"};
   auto scene = Scene{CAMERA_STARTING_POS, CAMERA_UP};
 
-  gl.setup(window.width(), window.height());
-  scene.setup(gl);
-
   setup_game_world(scene);
+
+  scene.setup(gl);
+  window.setup();
+  gl.setup(window.width(), window.height());
 
   return window.loop_until_done(gl, scene);
 }
