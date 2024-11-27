@@ -23,8 +23,13 @@ void setup_game_world(Scene& scene) {
   auto* player = scene.add_object(std::move(o1));
   scene.set_player(player);
 
-  auto o2 = std::make_unique<Background>(glm::vec3{0.0f}, glm::vec2{50.0f, 15.0f});
-  scene.add_object(std::move(o2));
+  auto b1 =
+      std::make_unique<Background>(glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{50.0f, 15.0f});
+  scene.add_object(std::move(b1));
+
+  auto b2 = std::make_unique<Background>(glm::vec3{0.0f, 10.0f, 5.0f},
+                                         glm::vec2{200.0f, 40.0f});
+  scene.add_object(std::move(b2));
 }
 
 } // namespace
