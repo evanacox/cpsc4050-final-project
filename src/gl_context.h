@@ -104,6 +104,8 @@ private:
                            const void* data, std::ptrdiff_t size_bytes) noexcept;
 
   GLuint current_vao_ = std::numeric_limits<GLuint>::max();
+  int framebuffer_width_ = 0;
+  int framebuffer_height_ = 0;
   std::unordered_map<std::string, GLuint> vaos_;
   std::unordered_map<GLuint, std::vector<GLuint>> vbos_;
   std::unordered_map<GLuint, std::vector<std::pair<GLuint, int>>> enabled_vbos_;

@@ -42,8 +42,10 @@ private:
   GLFWwindow* window_;
   Scene& scene_;
   std::string window_title_;
+  std::vector<int> keys_pressed_;
   int framebuffer_width_ = 0;
   int framebuffer_height_ = 0;
+  double previous_seconds_ = 0.0;
 };
 
 #endif // PROJECT_WINDOW_H

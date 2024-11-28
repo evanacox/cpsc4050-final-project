@@ -55,7 +55,7 @@ Window::Window(std::string window_title, Scene& scene) noexcept
 void Window::glfw_key_callback(int key, [[maybe_unused]] int scancode, int action,
                                [[maybe_unused]] int mods) noexcept {
   if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-    scene_.handle_keypress(key);
+    keys_pressed_.push_back(key);
   }
 }
 
@@ -68,7 +68,17 @@ int Window::loop_until_done(GLContext& gl) noexcept {
   auto proj = glm::perspective(35.0f, aspect_ratio, 0.1f, 100.0f);
 
   while (!glfwWindowShouldClose(window_)) {
+    double current_seconds = glfwGetTime();
+    double elapsed_seconds = current_seconds - previous_seconds_;
+    previous_seconds_ = current_seconds;
+
     update_fps_counter();
+
+    // this triggers at approx. 60hz
+    if (elapsed_seconds >= 0.0165) {
+      scene_.update_scene(keys_pressed_);
+      keys_pressed_.clear();
+    }
 
     // clear the screen and redraw everything
     gl.clear_enabled_buffers();

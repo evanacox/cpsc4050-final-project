@@ -59,8 +59,6 @@ Collision Rectangle::collides_with(const Player& player,
   if (x_difference >= 0 && y_difference >= 0) {
     auto location = CollisionLocation{};
 
-    std::clog << "x_diff = " << x_difference << ", y_diff = " << y_difference << "\n";
-
     // hack: check if the bottom of the player is at/above the rectangle.
     // if it is, and we're already colliding, we immediately go to "top"
     // for the purpose of our gravity simulation

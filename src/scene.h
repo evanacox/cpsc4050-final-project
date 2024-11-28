@@ -28,6 +28,10 @@ public:
   /// \param gl The OpenGL state
   void setup(GLContext& gl) noexcept;
 
+  /// Called once per second
+  ///
+  void update_scene(const std::vector<int>& keys_pressed) noexcept;
+
   /// Draws all the objects
   ///
   /// \param gl The OpenGL state
@@ -39,17 +43,19 @@ public:
   /// \param by The amount to translate by
   void translate_camera(glm::vec3 by) noexcept { camera_position_ += by; }
 
-  /// Handles a keypress from the window
+  /// Returns a reference to the player object
   ///
-  /// \param key The key to handle
-  void handle_keypress(int key) noexcept;
-
-  [[nodiscard]] Player& player() noexcept { return static_cast<Player&>(*objects_[0]); }
-
-  [[nodiscard]] GameObject& ground() noexcept { return *objects_[1]; }
+  /// \return The player object
+  [[nodiscard]] Player& player() noexcept {
+    // first object is always guaranteed to be a player object
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+    return static_cast<Player&>(*objects_[0]);
+  }
 
 private:
   void create_scene() noexcept;
+
+  void handle_keypress(int key) noexcept;
 
   // we keep all the objects in one array in order that we can still iterate over them
   // for drawing/setup/uniforms/whatever, but we have different "types" of objects at
