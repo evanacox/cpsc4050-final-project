@@ -26,10 +26,10 @@ public:
 
   void setup(GLContext& gl) noexcept override;
 
-  /// Returns which part of the player is colliding with `this`, if any
+  /// Returns which part of `this` is colliding with `player`, if any
   ///
   /// \param player The player being compared to
-  /// \return The part of `player` colliding with `this`
+  /// \return The side of `this` colliding with `player`
   [[nodiscard]] Collision collides_with(const Player& player) const noexcept;
 
 private:

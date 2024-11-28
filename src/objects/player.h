@@ -21,7 +21,15 @@ public:
 
   void setup(GLContext& gl) noexcept override;
 
+  GLuint load_uniforms(GLContext& gl, const glm::mat4& proj,
+                       const glm::mat4& view) noexcept override;
+
   [[nodiscard]] glm::vec2 dimensions() const noexcept { return glm::vec2{5.0f, 5.0f}; }
+
+  void set_color(glm::vec4 color) noexcept { color_ = color; }
+
+private:
+  glm::vec4 color_{};
 };
 
 #endif // PROJECT_PLAYER_H

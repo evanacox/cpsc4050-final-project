@@ -7,6 +7,8 @@
 
 #version 410
 
+uniform vec4 color;
+
 in vec4 model_vertex;
 in vec4 world_vertex;
 in vec2 texture_uv;
@@ -14,5 +16,5 @@ in vec2 texture_uv;
 out vec4 fragment_color;
 
 void main() {
-    fragment_color = vec4(0.7, 0.3, 0.6, 1.0);
+    fragment_color = color;
 }

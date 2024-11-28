@@ -23,17 +23,12 @@
   <component name="ChangeListManager">
     <list default="true" id="2bac2024-4cba-4dd8-b33c-316a0295d8f7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/background.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/background.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/background.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/background.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shaders/player.frag" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/player.frag" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/rectangle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/rectangle.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/rectangle.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/rectangle.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scene.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utility.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/utility.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utility.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/utility.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +97,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Native Application.platformer.executor": "Debug",
+    "Native Application.platformer.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
@@ -161,7 +156,7 @@
       <workItem from="1732630184388" duration="575000" />
       <workItem from="1732630764490" duration="14550000" />
       <workItem from="1732660552235" duration="3452000" />
-      <workItem from="1732729013565" duration="17343000" />
+      <workItem from="1732729013565" duration="19498000" />
     </task>
     <servers />
   </component>
@@ -182,9 +177,9 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/objects/rectangle.cpp</url>
-          <line>72</line>
-          <option name="timeStamp" value="22" />
+          <url>file://$PROJECT_DIR$/src/scene.cpp</url>
+          <line>68</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -32,56 +32,40 @@ struct RectangleProps {
 
 } // namespace
 
-Collision Rectangle::collides_with(const Player& player) const noexcept {
-  //  const dx = (rect1.x + rect1.w / 2) - (rect2.x + rect2.w / 2);
-  //  const dy = (rect1.y + rect1.h / 2) - (rect2.y + rect2.h / 2);
-  //  const width = (rect1.w + rect2.w) / 2;
-  //  const height = (rect1.h + rect2.h) / 2;
-  //  const crossWidth = width * dy;
-  //  const crossHeight = height * dx;
-  //  let collision = 'none';
-  //
-  //  if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
-  //    if (crossWidth > crossHeight) {
-  //      collision = (crossWidth > -crossHeight) ? 'bottom' : 'left';
-  //    } else {
-  //      collision = (crossWidth > -crossHeight) ? 'right' : 'top';
-  //    }
-  //  }
-  auto player_dims = player.dimensions();
-  auto player_pos = player.position();
-  auto this_pos = this->position();
-  auto rect1 =
-      RectangleProps{player_pos.x - player_dims.x / 2.0f,
-                     player_pos.y - player_dims.y / 2.0f, player_dims.x, player_dims.y};
-  auto rect2 =
-      RectangleProps{this_pos.x - dimension_.x / 2.0f, this_pos.y - dimension_.y / 2.0f,
-                     dimension_.x, dimension_.y};
+namespace {
 
+RectangleProps rect_from_pos_dimensions(glm::vec3 position,
+                                        glm::vec2 dimensions) noexcept {
+  return RectangleProps{position.x - dimensions.x / 2.0f,
+                        position.y - dimensions.y / 2.0f, dimensions.x, dimensions.y};
+}
+
+} // namespace
+
+Collision Rectangle::collides_with(const Player& player) const noexcept {
+  auto rect1 = rect_from_pos_dimensions(position(), dimension_);
+  auto rect2 = rect_from_pos_dimensions(player.position(), player.dimensions());
   auto dx = (rect1.x + rect1.w / 2.0f) - (rect2.x + rect2.w / 2.0f);
   auto dy = (rect1.y + rect1.h / 2.0f) - (rect2.y + rect2.h / 2.0f);
   auto width = (rect1.w + rect2.w) / 2.0f;
   auto height = (rect1.h + rect2.h) / 2.0f;
   auto cross_width = width * dy;
   auto cross_height = height * dx;
+  auto x_difference = width - std::fabs(dx);
+  auto y_difference = height - std::fabs(dy);
 
-  //  auto x_difference = width - std::fabs(dx) ;
-  //  auto y_difference = height - std::fabs(dy);
-  //
-  if (std::fabs(dx) <= width && std::fabs(dy) <= height) {
-    auto width_bigger = cross_width > cross_height;
-    auto width_bigger_than_neg = cross_width > -cross_height;
+  if (x_difference >= 0 && y_difference >= 0) {
     auto location = CollisionLocation{};
 
-    if (width_bigger && width_bigger_than_neg) {
+    if (cross_width > cross_height) {
       location = (cross_width > -cross_height) ? CollisionLocation::bottom
-                                               : CollisionLocation::left;
+                                               : CollisionLocation::right;
     } else {
-      location = (cross_width > -cross_height) ? CollisionLocation::right
+      location = (cross_width > -cross_height) ? CollisionLocation::left
                                                : CollisionLocation::top;
     }
 
-    return {location, 0.0f};
+    return {location, std::min(x_difference, y_difference)};
   }
 
   return {CollisionLocation::none, 0.0f};

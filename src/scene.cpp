@@ -56,15 +56,38 @@ void Scene::handle_keypress(int key) noexcept {
     return;
   }
 
+  player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
   player().translate(moving_by);
 
   for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
+    // we know this is safe, every obstacle is a rectangle
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
     auto [location, amount_less_to_move] = rect.collides_with(player());
 
-    if (location != CollisionLocation::none) {
+    if (location != CollisionLocation::none && amount_less_to_move != 0.0f) {
+      // undo our original translation, because it collides
       player().translate(-moving_by);
-      return;
+
+      switch (location) {
+      case CollisionLocation::bottom:
+        player().set_color(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+        break;
+      case CollisionLocation::top:
+        player().set_color(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
+        break;
+      case CollisionLocation::left:
+        player().set_color(glm::vec4{0.0f, 0.0f, 1.0f, 1.0f});
+        break;
+      case CollisionLocation::right:
+        player().set_color(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f});
+        break;
+      }
+
+      // the collision detection tells us how much less we need to move, so we move by
+      // exactly that much. since moving_by will always be 1.0 or -1.0, this effectively
+      // replaces the single non-zero component with the distance with however far we have
+      moving_by = moving_by * (1.0f - amount_less_to_move);
+      player().translate(moving_by);
     }
   }
 
@@ -84,7 +107,7 @@ auto backgrounds = std::array{
 // same structure here for the rectangular obstacles
 auto obstacles = std::array{
     // ground
-    std::pair{glm::vec3{0.0f, -10.0f, 0.0f}, glm::vec2{500.0f, 10.0f}}
+    std::pair{glm::vec3{0.0f, -10.0f, 0.0f}, glm::vec2{50.0f, 10.0f}}
     // clang-format on
 };
 
