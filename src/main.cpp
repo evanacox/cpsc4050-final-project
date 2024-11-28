@@ -6,42 +6,17 @@
 //======---------------------------------------------------------------======//
 
 #include "./gl_context.h"
-#include "./objects/background.h"
-#include "./objects/player.h"
-#include "./scene.h"
 #include "./window.h"
 #include <glm/glm.hpp>
-#include <memory>
 
 constexpr auto CAMERA_STARTING_POS = glm::vec3{0.0f, 0.0f, 5.0f};
 constexpr auto CAMERA_UP = glm::vec3{0.0f, 1.0f, 0.0f};
-
-namespace {
-
-void setup_game_world(Scene& scene) {
-  auto o1 = std::make_unique<Player>(glm::vec3{0.0f, 0.0f, 0.0f});
-  auto* player = scene.add_object(std::move(o1));
-  scene.set_player(player);
-
-  auto b1 =
-      std::make_unique<Background>(glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 15.0f});
-  scene.add_object(std::move(b1));
-
-  auto b2 = std::make_unique<Background>(glm::vec3{0.0f, 10.0f, 5.0f},
-                                         glm::vec2{500.0f, 40.0f});
-  scene.add_object(std::move(b2));
-}
-
-} // namespace
 
 int main() {
   auto gl = GLContext{};
   auto scene = Scene{CAMERA_STARTING_POS, CAMERA_UP};
   auto window = Window{"CPSC4050 Final Project", scene};
 
-  setup_game_world(scene);
-
-  // once we have all our objects loaded, we configure the scene and the window
   scene.setup(gl);
   window.setup();
 

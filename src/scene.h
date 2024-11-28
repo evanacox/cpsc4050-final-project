@@ -10,6 +10,7 @@
 
 #include "./gl_context.h"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 
 /// A single object in the game world.
@@ -122,20 +123,9 @@ private:
 class Scene {
 public:
   Scene(glm::vec3 camera_pos, glm::vec3 camera_up) noexcept
-      : camera_position_{camera_pos}, camera_up_{camera_up}, view_matrix_{1.0f} {}
+      : view_matrix_{1.0f}, camera_position_{camera_pos}, camera_up_{camera_up} {}
 
-  /// Adds an object to the scene
-  ///
-  /// \param object The object being added
-  GameObject* add_object(std::unique_ptr<GameObject> object) noexcept;
-
-  /// Sets the GameObject that's the "player", i.e. the GameObject that
-  /// the camera is looking at.
-  ///
-  /// \param player
-  void set_player(GameObject* player) noexcept { player_ = player; }
-
-  /// Initializes the sceneSets up the OpenGL state for all the objects
+  /// Initializes the scene, and sets up the OpenGL state for all the objects
   ///
   /// \param gl The OpenGL state
   void setup(GLContext& gl) noexcept;
@@ -156,9 +146,24 @@ public:
   /// \param key The key to handle
   void handle_keypress(int key) noexcept;
 
+  [[nodiscard]] GameObject& player() noexcept { return *objects_[0]; }
+
+  [[nodiscard]] GameObject& ground() noexcept { return *objects_[1]; }
+
 private:
+  void create_scene() noexcept;
+
+  // we keep all the objects in one array in order that we can still iterate over them
+  // for drawing/setup/uniforms/whatever, but we have different "types" of objects at
+  // different places
+  //
+  // [ player, background1, background2, ..., obstacle1, obstacle2, ... ]
+  //   ^       ^                              ^
+  //   |       |                              always index obstacles_begin_ to end
+  //   |       always index 2 to obstacles_begin_
+  //   always index 0
   std::vector<std::unique_ptr<GameObject>> objects_;
-  GameObject* player_ = nullptr;
+  std::size_t obstacles_begin_ = 0;
   glm::mat4 view_matrix_;
   glm::vec3 camera_position_;
   glm::vec3 camera_up_;

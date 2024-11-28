@@ -146,8 +146,27 @@ void GLContext::fill_enable_vbo_raw(GLuint vbo, int index, GLenum type,
 
 void GLContext::create_shader_program(std::string name, std::string vert_file,
                                       std::string frag_file) noexcept {
+  // before we go compile the shader, we make sure we haven't created it before.
+  //
+  // duplicated objects can do this, so we just check and early-exit if so
+  if (auto it = shader_files_.find(name); it != shader_files_.end()) {
+    auto [vert, frag] = it->second;
+
+    if (vert == vert_file && frag == frag_file) {
+      return;
+    }
+
+    std::cerr << "error: program '" << name << "' was already created previously:\n";
+    std::cerr << "  .vert file: '" << vert << "' (got '" << vert_file << "' this time)\n";
+    std::cerr << "  .frag file: '" << frag << "' (got '" << frag_file << "' this time)\n";
+    std::abort();
+  }
+
+  shader_files_.emplace(name, std::pair{vert_file, frag_file});
+
   auto vert = read_entire_file(std::move(vert_file));
   auto frag = read_entire_file(std::move(frag_file));
+
   auto info_log = std::array<char, 1024>{};
   auto vertex_shader =
       create_and_compile_shader(name, vert, info_log.data(), GL_VERTEX_SHADER);

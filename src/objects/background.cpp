@@ -13,14 +13,14 @@ void Background::setup(GLContext& gl) noexcept {
                            "shaders/background.frag");
   gl.create_and_bind_vao(vao_name());
 
-  auto vertices = rectangle_vertices(dimension_.x, dimension_.y, 0.0f, glm::vec3{0.0f});
+  auto props = rectangle_vertices(dimension_.x, dimension_.y, glm::vec3{0.0f});
   auto buf = gl.create_vbos(2);
   auto vertex = buf[0];
   auto uv = buf[1];
 
-  set_vertex_count(static_cast<int>(vertices.size()));
+  set_vertex_count(static_cast<int>(props.triangle_vertices.size()));
 
-  gl.fill_enable_vbo(vertex, 0, vertices);
+  gl.fill_enable_vbo(vertex, 0, props.triangle_vertices);
 }
 
 GLuint Background::load_uniforms(GLContext& gl, const glm::mat4& proj,

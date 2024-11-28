@@ -108,7 +108,7 @@ private:
   std::unordered_map<GLuint, std::vector<GLuint>> vbos_;
   std::unordered_map<GLuint, std::vector<std::pair<GLuint, int>>> enabled_vbos_;
   std::unordered_map<std::string, GLuint> shaders_;
-  std::unordered_map<std::string, std::string> shader_file_;
+  std::unordered_map<std::string, std::pair<std::string, std::string>> shader_files_;
 };
 
 #endif // PROJECT_GL_CONTEXT_H
