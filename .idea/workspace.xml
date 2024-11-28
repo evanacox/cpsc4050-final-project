@@ -23,9 +23,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2bac2024-4cba-4dd8-b33c-316a0295d8f7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shaders/player.frag" beforeDir="false" afterPath="$PROJECT_DIR$/shaders/player.frag" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/objects/player.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/player.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/rectangle.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/rectangle.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/objects/rectangle.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/objects/rectangle.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/scene.cpp" afterDir="false" />
@@ -97,7 +94,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Native Application.platformer.executor": "Run",
+    "Native Application.platformer.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
@@ -156,7 +153,7 @@
       <workItem from="1732630184388" duration="575000" />
       <workItem from="1732630764490" duration="14550000" />
       <workItem from="1732660552235" duration="3452000" />
-      <workItem from="1732729013565" duration="19498000" />
+      <workItem from="1732729013565" duration="25440000" />
     </task>
     <servers />
   </component>
@@ -177,9 +174,14 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/scene.cpp</url>
+          <url>file://$PROJECT_DIR$/src/objects/rectangle.cpp</url>
           <line>68</line>
-          <option name="timeStamp" value="28" />
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/objects/rectangle.cpp</url>
+          <line>58</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

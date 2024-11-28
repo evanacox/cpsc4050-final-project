@@ -37,36 +37,36 @@ void Scene::handle_keypress(int key) noexcept {
   constexpr auto DOWN = glm::vec3{0.0f, -1.0f, 0.0f};
   constexpr auto UP = glm::vec3{0.0f, 1.0f, 0.0f};
 
-  auto moving_by = glm::vec3{};
+  auto translation = glm::vec3{};
 
   switch (key) {
   case GLFW_KEY_LEFT:
-    moving_by = LEFT;
+    translation = LEFT;
     break;
   case GLFW_KEY_RIGHT:
-    moving_by = RIGHT;
+    translation = RIGHT;
     break;
   case GLFW_KEY_DOWN:
-    moving_by = DOWN;
+    translation = DOWN;
     break;
   case GLFW_KEY_UP:
-    moving_by = UP;
+    translation = UP;
     break;
   default:
     return;
   }
 
   player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
-  player().translate(moving_by);
+  player().translate(translation);
 
   for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
     // we know this is safe, every obstacle is a rectangle
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
-    auto [location, amount_less_to_move] = rect.collides_with(player());
+    auto [location, amount_less_to_move] = rect.collides_with(player(), translation);
 
     if (location != CollisionLocation::none && amount_less_to_move != 0.0f) {
       // undo our original translation, because it collides
-      player().translate(-moving_by);
+      player().translate(-translation);
 
       switch (location) {
       case CollisionLocation::bottom:
@@ -86,12 +86,12 @@ void Scene::handle_keypress(int key) noexcept {
       // the collision detection tells us how much less we need to move, so we move by
       // exactly that much. since moving_by will always be 1.0 or -1.0, this effectively
       // replaces the single non-zero component with the distance with however far we have
-      moving_by = moving_by * (1.0f - amount_less_to_move);
-      player().translate(moving_by);
+      translation = translation * (1.0f - amount_less_to_move);
+      player().translate(translation);
     }
   }
 
-  view_matrix_ = glm::translate(view_matrix_, moving_by);
+  view_matrix_ = glm::translate(view_matrix_, translation);
 }
 
 namespace {

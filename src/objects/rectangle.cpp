@@ -8,6 +8,7 @@
 #include "./rectangle.h"
 #include "../utility.h"
 #include <cmath>
+#include <iostream>
 
 void Rectangle::setup(GLContext& gl) noexcept {
   gl.create_shader_program("rectangle", "shaders/rectangle.vert",
@@ -42,7 +43,8 @@ RectangleProps rect_from_pos_dimensions(glm::vec3 position,
 
 } // namespace
 
-Collision Rectangle::collides_with(const Player& player) const noexcept {
+Collision Rectangle::collides_with(const Player& player,
+                                   glm::vec3 translation) const noexcept {
   auto rect1 = rect_from_pos_dimensions(position(), dimension_);
   auto rect2 = rect_from_pos_dimensions(player.position(), player.dimensions());
   auto dx = (rect1.x + rect1.w / 2.0f) - (rect2.x + rect2.w / 2.0f);
@@ -57,7 +59,14 @@ Collision Rectangle::collides_with(const Player& player) const noexcept {
   if (x_difference >= 0 && y_difference >= 0) {
     auto location = CollisionLocation{};
 
-    if (cross_width > cross_height) {
+    std::clog << "x_diff = " << x_difference << ", y_diff = " << y_difference << "\n";
+
+    // hack: check if the bottom of the player is at/above the rectangle.
+    // if it is, and we're already colliding, we immediately go to "top"
+    // for the purpose of our gravity simulation
+    if (std::fabs(rect2.y) <= std::fabs(rect1.y + rect1.h + translation.y)) {
+      location = CollisionLocation::top;
+    } else if (cross_width > cross_height) {
       location = (cross_width > -cross_height) ? CollisionLocation::bottom
                                                : CollisionLocation::right;
     } else {
