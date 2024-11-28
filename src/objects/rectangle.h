@@ -8,8 +8,15 @@
 #ifndef PROJECT_RECTANGLE_H
 #define PROJECT_RECTANGLE_H
 
-#include "../scene.h"
+#include "../game_object.h"
 #include "./player.h"
+
+enum class CollisionLocation { none = 0, bottom, top, left, right };
+
+struct Collision {
+  CollisionLocation location;
+  float amount_less_to_move;
+};
 
 /// A rectangular obstacle that supports collision detection in 2d.
 class Rectangle final : public NonUniqueGameObject {
@@ -19,7 +26,11 @@ public:
 
   void setup(GLContext& gl) noexcept override;
 
-  [[nodiscard]] bool collides_with(const Player& player) const noexcept;
+  /// Returns which part of the player is colliding with `this`, if any
+  ///
+  /// \param player The player being compared to
+  /// \return The part of `player` colliding with `this`
+  [[nodiscard]] Collision collides_with(const Player& player) const noexcept;
 
 private:
   glm::vec2 dimension_;

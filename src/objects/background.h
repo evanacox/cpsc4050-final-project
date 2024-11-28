@@ -8,7 +8,7 @@
 #ifndef PROJECT_BACKGROUND_H
 #define PROJECT_BACKGROUND_H
 
-#include "../scene.h"
+#include "../game_object.h"
 
 class Background final : public NonUniqueGameObject {
 public:

@@ -8,7 +8,7 @@
 #ifndef PROJECT_PLAYER_H
 #define PROJECT_PLAYER_H
 
-#include "../scene.h"
+#include "../game_object.h"
 #include <array>
 
 /// Models the player character
@@ -21,16 +21,7 @@ public:
 
   void setup(GLContext& gl) noexcept override;
 
-  /// Returns the (2d) corners of the player's hitbox. This allows for collision
-  /// detection by obstacles.
-  ///
-  /// \return
-  [[nodiscard]] std::array<glm::vec2, 4> hitbox_corners() const noexcept {
-    return corners_;
-  }
-
-private:
-  std::array<glm::vec2, 4> corners_;
+  [[nodiscard]] glm::vec2 dimensions() const noexcept { return glm::vec2{5.0f, 5.0f}; }
 };
 
 #endif // PROJECT_PLAYER_H

@@ -14,28 +14,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <memory>
 
-GLuint GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
-                                 const glm::mat4& view) noexcept {
-  auto shader = gl.use_program(shader_name_);
-  auto model = glm::translate(glm::mat4{1.0f}, -position_);
-
-  auto model_uniform = glGetUniformLocation(shader, "model");
-  auto view_uniform = glGetUniformLocation(shader, "view");
-  auto proj_uniform = glGetUniformLocation(shader, "proj");
-
-  glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-  glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
-  glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, glm::value_ptr(proj));
-
-  return shader;
-}
-
-void GameObject::draw(GLContext& gl) noexcept {
-  gl.bind_vao(vao_name_);
-
-  glDrawArrays(GL_TRIANGLES, 0, vertex_count() * 3);
-}
-
 void Scene::setup(GLContext& gl) noexcept {
   create_scene();
 
@@ -59,26 +37,38 @@ void Scene::handle_keypress(int key) noexcept {
   constexpr auto DOWN = glm::vec3{0.0f, -1.0f, 0.0f};
   constexpr auto UP = glm::vec3{0.0f, 1.0f, 0.0f};
 
+  auto moving_by = glm::vec3{};
+
   switch (key) {
   case GLFW_KEY_LEFT:
-    player().translate(LEFT);
-    view_matrix_ = glm::translate(view_matrix_, LEFT);
+    moving_by = LEFT;
     break;
   case GLFW_KEY_RIGHT:
-    player().translate(RIGHT);
-    view_matrix_ = glm::translate(view_matrix_, RIGHT);
+    moving_by = RIGHT;
     break;
   case GLFW_KEY_DOWN:
-    player().translate(DOWN);
-    view_matrix_ = glm::translate(view_matrix_, DOWN);
+    moving_by = DOWN;
     break;
   case GLFW_KEY_UP:
-    player().translate(UP);
-    view_matrix_ = glm::translate(view_matrix_, UP);
+    moving_by = UP;
     break;
   default:
-    break;
+    return;
   }
+
+  player().translate(moving_by);
+
+  for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
+    auto& rect = static_cast<Rectangle&>(*objects_[i]);
+    auto [location, amount_less_to_move] = rect.collides_with(player());
+
+    if (location != CollisionLocation::none) {
+      player().translate(-moving_by);
+      return;
+    }
+  }
+
+  view_matrix_ = glm::translate(view_matrix_, moving_by);
 }
 
 namespace {
@@ -93,8 +83,8 @@ auto backgrounds = std::array{
 
 // same structure here for the rectangular obstacles
 auto obstacles = std::array{
-    // clang-format off
-    std::pair{glm::vec3{0.0f, -5.0f, 0.0f}, glm::vec2{500.0f, 10.0f}}
+    // ground
+    std::pair{glm::vec3{0.0f, -10.0f, 0.0f}, glm::vec2{500.0f, 10.0f}}
     // clang-format on
 };
 

@@ -7,8 +7,8 @@
 
 #include "./utility.h"
 
-RectangleProperties rectangle_vertices(float full_width, float full_height,
-                                       glm::vec3 center) {
+std::vector<glm::vec3> rectangle_vertices(float full_width, float full_height,
+                                          glm::vec3 center) {
   auto width = full_width / 2.0f;
   auto height = full_height / 2.0f;
   auto p1 = center + glm::vec3{-width, height, 0.0f};
@@ -23,5 +23,5 @@ RectangleProperties rectangle_vertices(float full_width, float full_height,
   //  |   \|
   //  p2--p3
   //
-  return {{p1, p2, p3, p4}, {p1, p2, p3, p1, p3, p4}};
+  return {p1, p2, p3, p1, p3, p4};
 }
