@@ -49,8 +49,6 @@ void Scene::setup(GLContext& gl) noexcept {
 }
 
 void Scene::draw_everything(GLContext& gl, const glm::mat4& proj) noexcept {
-  handle_keypress(GLFW_KEY_LEFT);
-
   for (auto& object : objects_) {
     object->load_uniforms(gl, proj, view_matrix_);
     object->draw(gl);

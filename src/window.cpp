@@ -54,7 +54,7 @@ Window::Window(std::string window_title, Scene& scene) noexcept
 
 void Window::glfw_key_callback(int key, [[maybe_unused]] int scancode, int action,
                                [[maybe_unused]] int mods) noexcept {
-  if (action == GLFW_PRESS) {
+  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
     scene_.handle_keypress(key);
   }
 }

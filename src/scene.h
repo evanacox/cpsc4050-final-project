@@ -122,7 +122,7 @@ private:
 class Scene {
 public:
   Scene(glm::vec3 camera_pos, glm::vec3 camera_up) noexcept
-      : camera_position_{camera_pos}, camera_up_{camera_up} {}
+      : camera_position_{camera_pos}, camera_up_{camera_up}, view_matrix_{1.0f} {}
 
   /// Adds an object to the scene
   ///
@@ -135,7 +135,7 @@ public:
   /// \param player
   void set_player(GameObject* player) noexcept { player_ = player; }
 
-  /// Sets up the OpenGL state for all the objects
+  /// Initializes the sceneSets up the OpenGL state for all the objects
   ///
   /// \param gl The OpenGL state
   void setup(GLContext& gl) noexcept;

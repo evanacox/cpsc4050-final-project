@@ -12,7 +12,7 @@ void Player::setup(GLContext& gl) noexcept {
   gl.create_shader_program("player", "shaders/player.vert", "shaders/player.frag");
   gl.create_and_bind_vao("player");
 
-  auto vertices = rectangle_vertices(5.0f, 5.0f, 0.0f, glm::vec3{0.0f});
+  auto vertices = rectangle_vertices(2.5f, 2.5f, 0.0f, glm::vec3{0.0f});
   auto buf = gl.create_vbos(2);
   auto vertex = buf[0];
   auto uv = buf[1];
