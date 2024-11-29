@@ -6,6 +6,7 @@
 //======---------------------------------------------------------------======//
 
 #include "./window.h"
+#include <algorithm>
 #include <array>
 #include <charconv>
 #include <cmath>
@@ -54,8 +55,17 @@ Window::Window(std::string window_title, Scene& scene) noexcept
 
 void Window::glfw_key_callback(int key, [[maybe_unused]] int scancode, int action,
                                [[maybe_unused]] int mods) noexcept {
-  if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+  if (action == GLFW_PRESS) {
     keys_pressed_.push_back(key);
+  }
+
+  if (action == GLFW_RELEASE) {
+    auto it = std::find(keys_pressed_.begin(), keys_pressed_.end(), key);
+
+    // rather than remove from the middle, we swap to the end
+    // and then pop from the back. this is far more efficient
+    *it = keys_pressed_.back();
+    keys_pressed_.pop_back();
   }
 }
 
@@ -77,7 +87,6 @@ int Window::loop_until_done(GLContext& gl) noexcept {
     // this triggers at approx. 60hz
     if (elapsed_seconds >= 0.0165) {
       scene_.update_scene(keys_pressed_);
-      keys_pressed_.clear();
     }
 
     // clear the screen and redraw everything
