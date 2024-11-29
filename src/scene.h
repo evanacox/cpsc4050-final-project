@@ -21,7 +21,7 @@
 class Scene {
 public:
   Scene(glm::vec3 camera_pos, glm::vec3 camera_up) noexcept
-      : view_matrix_{1.0f}, camera_position_{camera_pos}, camera_up_{camera_up} {}
+      : camera_position_{camera_pos}, camera_up_{camera_up} {}
 
   /// Initializes the scene, and sets up the OpenGL state for all the objects
   ///
@@ -57,6 +57,10 @@ private:
 
   void handle_keypress(int key) noexcept;
 
+  void update_on_ground() noexcept;
+
+  void translate_player_by(glm::vec3 translation) noexcept;
+
   // we keep all the objects in one array in order that we can still iterate over them
   // for drawing/setup/uniforms/whatever, but we have different "types" of objects at
   // different places
@@ -68,9 +72,11 @@ private:
   //   always index 0
   std::vector<std::unique_ptr<GameObject>> objects_;
   std::size_t obstacles_begin_ = 0;
-  glm::mat4 view_matrix_;
+  glm::mat4 view_matrix_ = glm::mat4{1.0f};
   glm::vec3 camera_position_;
   glm::vec3 camera_up_;
+  glm::vec3 player_velocity_ = glm::vec3{0.0f};
+  bool on_ground_ = false;
 };
 
 #endif // PROJECT_SCENE_H

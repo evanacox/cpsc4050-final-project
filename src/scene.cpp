@@ -70,8 +70,31 @@ void Scene::create_scene() noexcept {
 }
 
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
+  on_ground_ = false;
+
+  // handle all our movement key-presses. if we happen to touch the ground here, it will
+  // figure it out and update `on_ground_`
   for (auto key : keys_pressed) {
     handle_keypress(key);
+  }
+
+  // if we didn't hit ground due to movement, check if we're already on it
+  if (!on_ground_) {
+    update_on_ground();
+  }
+
+  // if we still aren't on it, we apply gravity. otherwise, we stop the player
+  if (!on_ground_) {
+    //    constexpr auto acceleration_from_gravity = 0.05f;
+    //    constexpr auto mass_constant = 1.0f;
+    //
+    //    auto force = glm::vec3{0.0f, -1.0f, 0.0f} * acceleration_from_gravity;
+    //    auto acceleration = force / mass_constant;
+    //
+    //    player_velocity_ += acceleration;
+    //    translate_player_by(player_velocity_);
+  } else {
+    player_velocity_ = glm::vec3{0.0f};
   }
 }
 
@@ -100,7 +123,10 @@ void Scene::handle_keypress(int key) noexcept {
     return;
   }
 
-  player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
+  translate_player_by(translation);
+}
+
+void Scene::translate_player_by(glm::vec3 translation) noexcept {
   player().translate(translation);
 
   for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
@@ -113,28 +139,30 @@ void Scene::handle_keypress(int key) noexcept {
       // undo our original translation, because it collides
       player().translate(-translation);
 
-      switch (location) {
-      case CollisionLocation::bottom:
-        player().set_color(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
-        break;
-      case CollisionLocation::top:
-        player().set_color(glm::vec4{0.0f, 1.0f, 0.0f, 1.0f});
-        break;
-      case CollisionLocation::left:
-        player().set_color(glm::vec4{0.0f, 0.0f, 1.0f, 1.0f});
-        break;
-      case CollisionLocation::right:
-        player().set_color(glm::vec4{1.0f, 1.0f, 1.0f, 1.0f});
-        break;
+      if (location == CollisionLocation::top) {
+        on_ground_ = true;
       }
 
       // the collision detection tells us how much less we need to move, so we move by
       // exactly that much. since moving_by will always be 1.0 or -1.0, this effectively
       // replaces the single non-zero component with the distance with however far we have
       translation = translation * (1.0f - amount_less_to_move);
+
       player().translate(translation);
     }
   }
 
   view_matrix_ = glm::translate(view_matrix_, translation);
+}
+
+void Scene::update_on_ground() noexcept {
+  for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
+    auto& rect = static_cast<Rectangle&>(*objects_[i]);
+    auto [location, _] = rect.collides_with(player(), glm::vec3{0.0f});
+
+    if (location == CollisionLocation::top) {
+      on_ground_ = true;
+    }
+  }
 }
