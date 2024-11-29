@@ -77,6 +77,7 @@ private:
   glm::vec3 camera_up_;
   glm::vec3 player_velocity_ = glm::vec3{0.0f};
   bool on_ground_ = false;
+  int jumping_for_n_frames_ = 0;
 };
 
 #endif // PROJECT_SCENE_H
