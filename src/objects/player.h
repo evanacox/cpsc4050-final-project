@@ -29,7 +29,7 @@ public:
   void set_color(glm::vec4 color) noexcept { color_ = color; }
 
 private:
-  glm::vec4 color_ = glm::vec4{0.7f, 0.3f, 0.6f, 1.0f};
+  glm::vec4 color_ = glm::vec4{0.0f};
 };
 
 #endif // PROJECT_PLAYER_H

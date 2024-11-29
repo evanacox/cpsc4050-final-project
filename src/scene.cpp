@@ -37,8 +37,8 @@ namespace {
 // this array has pairs of (center point, dimension). dimension = (width, height)
 auto backgrounds = std::array{
     // clang-format off
-    std::pair{glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 30.0f}},
-    std::pair{glm::vec3{0.0f, 10.0f, 5.0f}, glm::vec2{500.0f, 80.0f}}
+            std::pair{glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 30.0f}},
+            std::pair{glm::vec3{0.0f, 10.0f, 5.0f}, glm::vec2{500.0f, 80.0f}}
     // clang-format on
 };
 
@@ -79,6 +79,8 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
   jumping_for_n_frames_ = 0;
 
+  player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
+
   // handle all our movement key-presses. if we happen to touch the ground here, it will
   // figure it out and update `on_ground_`
   for (auto key : keys_pressed) {
@@ -92,6 +94,7 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
 
   // if we still aren't on it, we apply gravity. otherwise, we stop the player
   if (!on_ground_ && jumping_for_n_frames_ == 0) {
+    player().set_color(glm::vec4{0.3f, 0.6f, 0.9f, 1.0f});
     translate_player_by(DOWN);
   }
 }
