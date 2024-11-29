@@ -77,12 +77,7 @@ void Scene::create_scene() noexcept {
 
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
-
-  if (0 < jumping_for_n_frames_ && jumping_for_n_frames_ < 10) {
-    jumping_for_n_frames_ += 1;
-  } else {
-    jumping_for_n_frames_ = 0;
-  }
+  jumping_for_n_frames_ = 0;
 
   // handle all our movement key-presses. if we happen to touch the ground here, it will
   // figure it out and update `on_ground_`
@@ -98,8 +93,6 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   // if we still aren't on it, we apply gravity. otherwise, we stop the player
   if (!on_ground_ && jumping_for_n_frames_ == 0) {
     translate_player_by(DOWN);
-  } else if (jumping_for_n_frames_ != 0) {
-    translate_player_by(UP);
   }
 }
 
@@ -117,6 +110,7 @@ void Scene::handle_keypress(int key) noexcept {
     translation = DOWN;
     break;
   case GLFW_KEY_UP:
+    translation = UP;
     jumping_for_n_frames_ = 1;
     break;
   default:
