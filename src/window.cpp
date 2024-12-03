@@ -8,11 +8,12 @@
 #include "./window.h"
 #include <algorithm>
 #include <array>
-#include <charconv>
 #include <cmath>
 #include <cstdlib>
 #include <glm/ext.hpp>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 namespace {
 
@@ -23,11 +24,10 @@ void keyboard_callback(GLFWwindow*, int key, int scancode, int action, int mods)
 }
 
 std::string to_string_two_decimals(double value) {
-  auto buf = std::array<char, 64>{};
-  auto [ptr, _] =
-      std::to_chars(buf.data(), buf.data() + 64, value, std::chars_format::general, 2);
+  auto ss = std::stringstream{};
+  ss << std::fixed << std::setprecision(2) << value;
 
-  return {buf.data(), static_cast<std::size_t>(ptr - buf.data())};
+  return ss.str();
 }
 
 } // namespace
@@ -80,12 +80,13 @@ int Window::loop_until_done(GLContext& gl) noexcept {
   while (!glfwWindowShouldClose(window_)) {
     double current_seconds = glfwGetTime();
     double elapsed_seconds = current_seconds - previous_seconds_;
-    previous_seconds_ = current_seconds;
 
     update_fps_counter();
 
     // this triggers at approx. 60hz
     if (elapsed_seconds >= 0.0165) {
+      previous_seconds_ = current_seconds;
+
       scene_.update_scene(keys_pressed_);
     }
 

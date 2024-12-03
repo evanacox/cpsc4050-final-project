@@ -11,7 +11,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <limits>
-#include <span>
 #include <string>
 #include <type_traits>
 #include <unordered_map>
