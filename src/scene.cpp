@@ -21,6 +21,7 @@ void Scene::setup(GLContext& gl) noexcept {
   create_scene();
 
   view_matrix_ = glm::lookAt(camera_position_, player().position(), camera_up_);
+  view_matrix_ = glm::translate(view_matrix_, glm::vec3{0.0f, 15.0f, 0.0f});
 
   for (auto& object : objects_) {
     object->setup(gl);
@@ -40,17 +41,18 @@ namespace {
 auto backgrounds = std::array{
     // clang-format off
   // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
-  std::tuple{glm::vec3{0.0f, 10.0f, 5.0f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/1.png"},
-  std::tuple{glm::vec3{0.0f, 10.0f, 3.0f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/2.png"},
-  std::tuple{glm::vec3{0.0f, 10.0f, 1.5f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/3.png"},
-  std::tuple{glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/4.png"}
+  std::tuple{glm::vec3{0.0f, -20.0f, 5.0f}, glm::vec2{300.0f, 200.0f}, "assets/backgrounds/1.png"},
+  std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
+  std::tuple{glm::vec3{0.0f, 0.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
+  std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
+  std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"}
     // clang-format on
 };
 
 // same structure here for the rectangular obstacles
 auto obstacles = std::array{
     // ground
-    std::pair{glm::vec3{0.0f, -10.0f, 0.0f}, glm::vec2{50.0f, 10.0f}}
+    std::pair{glm::vec3{0.0f, -30.0f, 0.0f}, glm::vec2{250.0f, 10.0f}}
     // clang-format on
 };
 
@@ -153,6 +155,9 @@ void Scene::translate_player_by(glm::vec3 translation) noexcept {
       player().translate(translation);
     }
   }
+
+  // std::cout << "player position is (" << player().position().x << ", "
+  //          << player().position().y << ")\n";
 
   view_matrix_ = glm::translate(view_matrix_, translation);
 }
