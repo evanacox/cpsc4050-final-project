@@ -61,6 +61,8 @@ public:
 
   [[nodiscard]] const std::string& vao_name() const noexcept { return vao_name_; }
 
+  [[nodiscard]] const std::string& texture_name() const noexcept { return texture_name_; }
+
 protected:
   /// Initializes the object's position. This is used to compute the model
   /// matrix.
@@ -68,10 +70,10 @@ protected:
   /// \param position The position of the object
   /// \param shader_name The name of the shader program used by this object
   /// \param vao_name The name of the VAO created by this object
-  explicit GameObject(glm::vec3 position, std::string shader_name,
-                      std::string vao_name) noexcept
+  explicit GameObject(glm::vec3 position, std::string shader_name, std::string vao_name,
+                      const char* texture_name) noexcept
       : shader_name_{std::move(shader_name)}, vao_name_{std::move(vao_name)},
-        position_{position} {}
+        texture_name_{texture_name}, position_{position} {}
 
   /// Sets the number of vertices the vertex array has. This is
   /// not the number of individual float values, rather the number
@@ -84,6 +86,7 @@ private:
   int vertex_len_ = 0;
   std::string shader_name_;
   std::string vao_name_;
+  std::string texture_name_;
   glm::vec3 position_;
 };
 
@@ -96,8 +99,9 @@ protected:
   ///
   /// \param position
   /// \param object_name
-  UniqueGameObject(glm::vec3 position, const char* object_name) noexcept
-      : GameObject{position, object_name, object_name} {}
+  UniqueGameObject(glm::vec3 position, const char* object_name,
+                   const char* texture_name) noexcept
+      : GameObject{position, object_name, object_name, texture_name} {}
 };
 
 /// A game object where there can only be exactly one of them
@@ -109,7 +113,8 @@ protected:
   ///
   /// \param position
   /// \param object_name
-  NonUniqueGameObject(glm::vec3 position, const char* object_name) noexcept;
+  NonUniqueGameObject(glm::vec3 position, const char* object_name,
+                      const char* texture_name) noexcept;
 
 private:
   static int counter;

@@ -12,8 +12,8 @@
 
 class Background final : public NonUniqueGameObject {
 public:
-  explicit Background(glm::vec3 center, glm::vec2 dimension) noexcept
-      : NonUniqueGameObject(center, "background"), dimension_{dimension} {}
+  explicit Background(glm::vec3 center, glm::vec2 dimension, const char* texture) noexcept
+      : NonUniqueGameObject(center, "background", texture), dimension_{dimension} {}
 
   void setup(GLContext& gl) noexcept override;
 

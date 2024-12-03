@@ -9,11 +9,13 @@
 #include "./objects/background.h"
 #include "./objects/player.h"
 #include "./objects/rectangle.h"
+#include <algorithm>
 #include <cassert>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <memory>
+#include <tuple>
 
 void Scene::setup(GLContext& gl) noexcept {
   create_scene();
@@ -37,8 +39,11 @@ namespace {
 // this array has pairs of (center point, dimension). dimension = (width, height)
 auto backgrounds = std::array{
     // clang-format off
-            std::pair{glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 30.0f}},
-            std::pair{glm::vec3{0.0f, 10.0f, 5.0f}, glm::vec2{500.0f, 80.0f}}
+  // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
+  std::tuple{glm::vec3{0.0f, 10.0f, 5.0f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/1.png"},
+  std::tuple{glm::vec3{0.0f, 10.0f, 3.0f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/2.png"},
+  std::tuple{glm::vec3{0.0f, 10.0f, 1.5f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/3.png"},
+  std::tuple{glm::vec3{0.0f, 0.0f, 0.5f}, glm::vec2{500.0f, 500.0f}, "assets/backgrounds/4.png"}
     // clang-format on
 };
 
@@ -58,10 +63,8 @@ constexpr auto UP = glm::vec3{0.0f, 1.0f, 0.0f};
 
 void Scene::create_scene() noexcept {
   // create the player
-  objects_.push_back(std::make_unique<Player>(glm::vec3{0.0f, 0.0f, 0.0f}));
-
-  for (const auto& [center, dimension] : backgrounds) {
-    auto background = std::make_unique<Background>(center, dimension);
+  for (const auto& [center, dimension, texture] : backgrounds) {
+    auto background = std::make_unique<Background>(center, dimension, texture);
 
     objects_.push_back(std::move(background));
   }
@@ -73,6 +76,8 @@ void Scene::create_scene() noexcept {
 
     objects_.push_back(std::move(obstacle));
   }
+
+  objects_.push_back(std::make_unique<Player>(glm::vec3{0.0f, 0.0f, 0.0f}));
 }
 
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
@@ -126,7 +131,7 @@ void Scene::handle_keypress(int key) noexcept {
 void Scene::translate_player_by(glm::vec3 translation) noexcept {
   player().translate(translation);
 
-  for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
+  for (auto i = obstacles_begin_; i < objects_.size() - 1; ++i) {
     // we know this is safe, every obstacle is a rectangle
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
@@ -153,7 +158,7 @@ void Scene::translate_player_by(glm::vec3 translation) noexcept {
 }
 
 void Scene::update_on_ground() noexcept {
-  for (auto i = obstacles_begin_; i < objects_.size(); ++i) {
+  for (auto i = obstacles_begin_; i < objects_.size() - 1; ++i) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
     auto [location, _] = rect.collides_with(player(), glm::vec3{0.0f});

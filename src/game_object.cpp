@@ -31,8 +31,9 @@ void GameObject::draw(GLContext& gl) noexcept {
   glDrawArrays(GL_TRIANGLES, 0, vertex_count() * 3);
 }
 
-NonUniqueGameObject::NonUniqueGameObject(glm::vec3 position,
-                                         const char* object_name) noexcept
-    : GameObject{position, object_name, object_name + std::to_string(counter++)} {}
+NonUniqueGameObject::NonUniqueGameObject(glm::vec3 position, const char* object_name,
+                                         const char* texture_name) noexcept
+    : GameObject{position, object_name, object_name + std::to_string(counter++),
+                 texture_name} {}
 
 int NonUniqueGameObject::counter = 0;

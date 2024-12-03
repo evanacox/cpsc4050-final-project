@@ -7,8 +7,8 @@
 
 #include "./utility.h"
 
-std::vector<glm::vec3> rectangle_vertices(float full_width, float full_height,
-                                          glm::vec3 center) {
+RectangleBuffers rectangle_vertices(float full_width, float full_height,
+                                    glm::vec3 center) {
   auto width = full_width / 2.0f;
   auto height = full_height / 2.0f;
   auto p1 = center + glm::vec3{-width, height, 0.0f};
@@ -23,5 +23,13 @@ std::vector<glm::vec3> rectangle_vertices(float full_width, float full_height,
   //  |   \|
   //  p2--p3
   //
-  return {p1, p2, p3, p1, p3, p4};
+  auto vertices = std::vector{p1, p2, p3, p1, p3, p4};
+
+  auto uv1 = glm::vec2{0.0f, 1.0f};
+  auto uv2 = glm::vec2{0.0f, 0.0f};
+  auto uv3 = glm::vec2{1.0f, 0.0f};
+  auto uv4 = glm::vec2{1.0f, 1.0f};
+  auto uv_coords = std::vector{uv1, uv2, uv3, uv1, uv3, uv4};
+
+  return {std::move(vertices), std::move(uv_coords)};
 }

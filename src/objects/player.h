@@ -17,7 +17,8 @@ public:
   /// Initializes the object
   ///
   /// \param position The starting position of the player
-  explicit Player(glm::vec3 position) noexcept : UniqueGameObject(position, "player") {}
+  explicit Player(glm::vec3 position) noexcept
+      : UniqueGameObject(position, "player", "") {}
 
   void setup(GLContext& gl) noexcept override;
 

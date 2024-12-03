@@ -9,6 +9,7 @@
 
 uniform vec2 height_interval;
 uniform vec2 width_interval;
+uniform sampler2D background_image;
 
 in vec4 model_vertex;
 in vec4 world_vertex;
@@ -25,8 +26,8 @@ float interval_to_color_modded(vec2 interval, float value) {
 }
 
 void main() {
-    float r = interval_to_color_modded(width_interval, model_vertex.x);
-    float g = interval_to_color(height_interval, model_vertex.y);
+    float u = interval_to_color(width_interval, model_vertex.x);
+    float v = interval_to_color(height_interval, model_vertex.y);
 
-    fragment_color = vec4(r, g, 0.0, 1.0);
+    fragment_color = texture(background_image, texture_uv);
 }

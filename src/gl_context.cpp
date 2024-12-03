@@ -12,6 +12,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <stb_image.h>
 
 namespace fs = std::filesystem;
 
@@ -84,6 +85,10 @@ void GLContext::setup(int framebuffer_width, int framebuffer_height) noexcept {
   // enable depth testing, smaller Z-distance => "closer"
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
+
+  // enable blending, so we get some basic transparency
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // enable culling the back of objects, we should only be looking at the front
   glEnable(GL_CULL_FACE);
@@ -201,4 +206,37 @@ GLuint GLContext::use_program(const std::string& name) noexcept {
   glUseProgram(program);
 
   return program;
+}
+
+void GLContext::create_texture(const std::string& name) noexcept {
+  auto tex = GLuint{};
+  int width, height, channels;
+
+  auto* data = stbi_load(name.c_str(), &width, &height, &channels, 0);
+
+  glGenTextures(1, &tex);
+  glBindTexture(GL_TEXTURE_2D, tex);
+
+  // set the texture to not allow coords outside [0.0, 1.0], otherwise return bright red
+  auto color = std::array<float, 4>{1.0f, 0.0f, 0.0f, 1.0f};
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color.data());
+
+  // clamp to nearest, gives a pixelated/retro look
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  // load the texture into tex
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+               data);
+
+  textures_[name] = tex;
+
+  stbi_image_free(data);
+}
+
+void GLContext::load_texture(const std::string& name, GLenum active_texture) noexcept {
+  glActiveTexture(active_texture);
+  glBindTexture(GL_TEXTURE_2D, textures_[name]);
 }

@@ -89,6 +89,17 @@ public:
   /// \param name The name of the shader
   GLuint use_program(const std::string& name) noexcept;
 
+  /// Creates a texture and loads it into OpenGL.
+  ///
+  /// \param name The name to give the texture
+  void create_texture(const std::string& name) noexcept;
+
+  /// Loads a texture and binds it as the current one.
+  ///
+  /// \param name The name given to the previously created texture
+  void load_texture(const std::string& name,
+                    GLenum active_texture = GL_TEXTURE0) noexcept;
+
 private:
   /// Fills an existing VBO with data, and enables it at a given index.
   ///
@@ -110,6 +121,7 @@ private:
   std::unordered_map<GLuint, std::vector<std::pair<GLuint, int>>> enabled_vbos_;
   std::unordered_map<std::string, GLuint> shaders_;
   std::unordered_map<std::string, std::pair<std::string, std::string>> shader_files_;
+  std::unordered_map<std::string, GLuint> textures_;
 };
 
 #endif // PROJECT_GL_CONTEXT_H

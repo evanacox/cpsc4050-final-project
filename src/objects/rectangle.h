@@ -22,7 +22,7 @@ struct Collision {
 class Rectangle final : public NonUniqueGameObject {
 public:
   explicit Rectangle(glm::vec3 center, glm::vec2 dimension) noexcept
-      : NonUniqueGameObject(center, "rectangle"), dimension_{dimension} {}
+      : NonUniqueGameObject(center, "rectangle", ""), dimension_{dimension} {}
 
   void setup(GLContext& gl) noexcept override;
 

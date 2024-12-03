@@ -49,7 +49,7 @@ public:
   [[nodiscard]] Player& player() noexcept {
     // first object is always guaranteed to be a player object
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
-    return static_cast<Player&>(*objects_[0]);
+    return static_cast<Player&>(*objects_.back());
   }
 
 private:

@@ -21,6 +21,10 @@ public:
   /// Callback used by GLFW3
   void glfw_key_callback(int key, int scancode, int action, int mods) noexcept;
 
+
+  /// Callback used by GLFW3
+  void glfw_size_callback(int true_width, int true_height) noexcept;
+
   /// This shouldn't exist, but it does because GLFW is stupid and doesn't call the
   /// callbacks it promises to.
   void setup() noexcept;

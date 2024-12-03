@@ -11,9 +11,9 @@
 #include <cmath>
 #include <cstdlib>
 #include <glm/ext.hpp>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
 
 namespace {
 
@@ -21,6 +21,10 @@ Window* window = nullptr;
 
 void keyboard_callback(GLFWwindow*, int key, int scancode, int action, int mods) {
   window->glfw_key_callback(key, scancode, action, mods);
+}
+
+void window_size_callback(GLFWwindow*, int width, int height) {
+  window->glfw_size_callback(width, height);
 }
 
 std::string to_string_two_decimals(double value) {
@@ -44,6 +48,7 @@ Window::Window(std::string window_title, Scene& scene) noexcept
   }
 
   glfwSetKeyCallback(window_, keyboard_callback);
+  glfwSetWindowSizeCallback(window_, window_size_callback);
   glfwMakeContextCurrent(window_);
 
   // enable 4x MSAA, framebuffer will be 4x the size of our actual window
@@ -67,6 +72,10 @@ void Window::glfw_key_callback(int key, [[maybe_unused]] int scancode, int actio
     *it = keys_pressed_.back();
     keys_pressed_.pop_back();
   }
+}
+
+void Window::glfw_size_callback(int, int) noexcept {
+  glfwGetFramebufferSize(window_, &framebuffer_width_, &framebuffer_height_);
 }
 
 void Window::setup() noexcept {

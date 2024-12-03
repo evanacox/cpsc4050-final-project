@@ -15,14 +15,15 @@ void Rectangle::setup(GLContext& gl) noexcept {
                            "shaders/rectangle.frag");
   gl.create_and_bind_vao(vao_name());
 
-  auto vertices = rectangle_vertices(dimension_.x, dimension_.y, glm::vec3{0.0f});
+  auto buffers = rectangle_vertices(dimension_.x, dimension_.y, glm::vec3{0.0f});
   auto buf = gl.create_vbos(2);
   auto vertex = buf[0];
   auto uv = buf[1];
 
-  set_vertex_count(static_cast<int>(vertices.size()));
+  set_vertex_count(static_cast<int>(buffers.vertices.size()));
 
-  gl.fill_enable_vbo(vertex, 0, vertices);
+  gl.fill_enable_vbo(vertex, 0, buffers.vertices);
+  gl.fill_enable_vbo(uv, 1, buffers.uv_coords);
 }
 
 namespace {
