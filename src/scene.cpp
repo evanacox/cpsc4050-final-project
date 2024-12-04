@@ -85,8 +85,6 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
   jumping_for_n_frames_ = 0;
 
-  player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
-
   // handle all our movement key-presses. if we happen to touch the ground here, it will
   // figure it out and update `on_ground_`
   for (auto key : keys_pressed) {
@@ -103,6 +101,29 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
     player().set_color(glm::vec4{0.3f, 0.6f, 0.9f, 1.0f});
     translate_player_by(DOWN);
   }
+
+  if (on_ground_) 
+  {
+    if (keys_pressed.empty()) 
+    {
+      player().set_animation("idle");
+    } 
+    else 
+    {
+      player().set_animation("run");
+    }
+  } 
+  else if (player_velocity_.y > 0) 
+  {
+    player().set_animation("jump");
+  } 
+  else 
+  {
+    player().set_animation("fall");
+  }
+
+  player().update_animation(0.016f); // Assuming 60 FPS
+
 }
 
 void Scene::handle_keypress(int key) noexcept {

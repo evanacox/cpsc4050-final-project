@@ -10,6 +10,24 @@
 
 #include "../game_object.h"
 #include <array>
+#include <unordered_map>
+#include <vector>
+#include <string>
+#include <glm/glm.hpp>
+
+/// Represents a single animation in the sprite sheet
+  struct Animation {
+      int frame_count;               // Total number of frames in the animation
+      int current_frame = 0;         // Index of the current frame (starts at 0)
+      float frame_time;              // Duration of each frame in seconds
+      float elapsed_time = 0.0f;     // Time elapsed since the last frame change
+      glm::vec2 frame_size;          // Size of each frame in UV coordinates (normalized)
+      std::vector<glm::vec2> uv_coords; // UV coordinates for all frames
+
+      /// Constructor to initialize the animation
+      Animation(int frames, float time_per_frame, glm::vec2 size);
+  };
+
 
 /// Models the player character
 class Player final : public UniqueGameObject {
@@ -29,8 +47,24 @@ public:
 
   void set_color(glm::vec4 color) noexcept { color_ = color; }
 
+
+  /// Updates the current animation frame based on elapsed time
+  void update_animation(float delta_time);
+  /// Sets the current animation by name
+  void set_animation(const std::string& anim_name);
+
 private:
+  
   glm::vec4 color_ = glm::vec4{0.0f};
+  GLuint uv_vbo;                                         // OpenGL buffer for UV coordinates
+  std::unordered_map<std::string, Animation> animations; // Map of animations by name
+  Animation* current_animation = nullptr;               // Pointer to the current animation
+
+  /// Loads animations into the player object
+  void load_animations();
+
+  /// Updates the UV buffer with the current animation frame
+  void update_uv_buffer();
 };
 
 #endif // PROJECT_PLAYER_H

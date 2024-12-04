@@ -34,3 +34,11 @@ GLuint Player::load_uniforms(GLContext& gl, const glm::mat4& proj,
 
   return shader;
 }
+
+void Player::load_animations() {
+    animations["idle"] = Animation(8, 0.2f, glm::vec2(0.25f, 0.25f), "assets/character/1_Cat_Idle-Sheet.png");
+    animations["run"] = Animation(10, 0.1f, glm::vec2(0.166f, 0.25f), "assets/character/1_Cat_Run-Sheet.png");
+    animations["jump"] = Animation(4, 0.3f, glm::vec2(0.5f, 0.25f), "assets/character/1_Cat_Jump-Sheet.png");
+    animations["fall"] = Animation(4, 0.3f, glm::vec2(0.5f, 0.25f), "assets/character/1_Cat_Fall-Sheet.png");
+    current_animation = &animations["idle"];
+}
