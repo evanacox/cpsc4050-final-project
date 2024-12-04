@@ -23,9 +23,11 @@
       float elapsed_time = 0.0f;     // Time elapsed since the last frame change
       glm::vec2 frame_size;          // Size of each frame in UV coordinates (normalized)
       std::vector<glm::vec2> uv_coords; // UV coordinates for all frames
+      std::string texture_name;      // Name of the associated texture
 
       /// Constructor to initialize the animation
-      Animation(int frames, float time_per_frame, glm::vec2 size);
+      Animation(int frames, float time_per_frame, glm::vec2 size, const std::string& texture)
+        : frame_count(frames), frame_time(time_per_frame), frame_size(size), texture_name(texture) {}
   };
 
 
