@@ -73,10 +73,10 @@ Animation::Animation(int frames, glm::vec2 size, std::string texture_name) noexc
 
 void Player::load_animations(GLContext& gl) {
   // Load textures for animations
-  gl.create_texture("idle", "assets/character/1_Cat_Idle-Sheet.png");
-  gl.create_texture("run", "assets/character/2_Cat_Run-Sheet.png");
-  gl.create_texture("jump", "assets/character/3_Cat_Jump-Sheet.png");
-  gl.create_texture("fall", "assets/character/4_Cat_Fall-Sheet.png");
+  gl.create_texture("idle", "assets/character/1_Cat_Idle-Sheet4.png");
+  gl.create_texture("run", "assets/character/2_Cat_Run-Sheet2.png");
+  gl.create_texture("jump", "assets/character/3_Cat_Jump-Sheet2.png");
+  gl.create_texture("fall", "assets/character/4_Cat_Fall-Sheet2.png");
 
   animations_["idle"] = Animation(8, glm::vec2(0.125f, 0.25f), "idle");
   animations_["run"] = Animation(10, glm::vec2(0.1f, 0.25f), "run");

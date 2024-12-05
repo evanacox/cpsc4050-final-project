@@ -22,9 +22,18 @@ struct Collision {
 class Rectangle final : public NonUniqueGameObject {
 public:
   explicit Rectangle(glm::vec3 center, glm::vec2 dimension) noexcept
-      : NonUniqueGameObject(center, "rectangle", ""), dimension_{dimension} {}
+      : NonUniqueGameObject(center, "rectangle", ""), dimension_{dimension},
+        is_transparent_{true} {}
+
+  explicit Rectangle(glm::vec3 center, glm::vec2 dimension,
+                     const char* texture_name) noexcept
+      : NonUniqueGameObject(center, "rectangle", texture_name), dimension_{dimension},
+        is_transparent_{false} {}
 
   void setup(GLContext& gl) noexcept override;
+
+  GLuint load_uniforms(GLContext& gl, const glm::mat4& proj,
+                       const glm::mat4& view) noexcept override;
 
   /// Returns which part of `this` is colliding with `player`, if any
   ///
@@ -36,6 +45,7 @@ public:
 
 private:
   glm::vec2 dimension_;
+  bool is_transparent_;
 };
 
 #endif // PROJECT_RECTANGLE_H

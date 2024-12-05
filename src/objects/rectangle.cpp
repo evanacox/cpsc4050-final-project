@@ -13,6 +13,11 @@
 void Rectangle::setup(GLContext& gl) noexcept {
   gl.create_shader_program("rectangle", "shaders/rectangle.vert",
                            "shaders/rectangle.frag");
+
+  if (!is_transparent_) {
+    gl.create_texture(texture_name());
+  }
+
   gl.create_and_bind_vao(vao_name());
 
   auto buffers = rectangle_vertices(dimension_.x, dimension_.y, glm::vec3{0.0f});
@@ -24,6 +29,23 @@ void Rectangle::setup(GLContext& gl) noexcept {
 
   gl.fill_enable_vbo(vertex, 0, buffers.vertices);
   gl.fill_enable_vbo(uv, 1, buffers.uv_coords);
+}
+
+GLuint Rectangle::load_uniforms(GLContext& gl, const glm::mat4& proj,
+                                const glm::mat4& view) noexcept {
+  auto shader = GameObject::load_uniforms(gl, proj, view);
+  auto background_image = glGetUniformLocation(shader, "background_image");
+  auto is_transparent = glGetUniformLocation(shader, "is_transparent");
+
+  if (is_transparent_) {
+    gl.load_texture(texture_name());
+  }
+
+  // set the uniform to use GL_TEXTURE0 (the sprite we loaded)
+  glUniform1i(background_image, 0);
+  glUniform1i(is_transparent, static_cast<int>(is_transparent_));
+
+  return shader;
 }
 
 namespace {

@@ -50,9 +50,15 @@ auto backgrounds = std::array{
 };
 
 // same structure here for the rectangular obstacles
-auto obstacles =
+auto invisible_walls =
     std::array{// pair of ({center of the rectangle}, {x and y dimensions})
                std::pair{glm::vec3{0.0f, -30.0f, 0.0f}, glm::vec2{250.0f, 10.0f}}};
+
+// same structure here for the rectangular obstacles
+auto textured_obstacles =
+    std::array{// pair of ({center of the rectangle}, {x and y dimensions})
+               std::tuple{glm::vec3{0.0f, 30.0f, 0.0f}, glm::vec2{250.0f, 10.0f},
+                          "assets/backgrounds/grass_2.png"}};
 
 constexpr auto LEFT = glm::vec3{-1.0f, 0.0f, 0.0f};
 constexpr auto RIGHT = glm::vec3{1.0f, 0.0f, 0.0f};
@@ -71,8 +77,15 @@ void Scene::create_scene() noexcept {
 
   obstacles_begin_ = objects_.size();
 
-  for (const auto& [center, dimension] : obstacles) {
-    auto obstacle = std::make_unique<Rectangle>(center, dimension);
+  for (const auto& [center, dimension] : invisible_walls) {
+    auto obstacle =
+        std::make_unique<Rectangle>(center, dimension, "assets/backgrounds/grass_2.png");
+
+    objects_.push_back(std::move(obstacle));
+  }
+
+  for (const auto& [center, dimension, texture] : textured_obstacles) {
+    auto obstacle = std::make_unique<Rectangle>(center, dimension, texture);
 
     objects_.push_back(std::move(obstacle));
   }
