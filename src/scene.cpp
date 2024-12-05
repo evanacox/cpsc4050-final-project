@@ -46,8 +46,7 @@ auto backgrounds = std::array{
   std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
   std::tuple{glm::vec3{0.0f, 15.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
   std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
-  std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"}
-    // clang-format on
+  std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"} // clang-format on
 };
 
 // same structure here for the rectangular obstacles
@@ -84,6 +83,7 @@ void Scene::create_scene() noexcept {
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
   jumping_for_n_frames_ = 0;
+  player_velocity_ = glm::vec3{0.0f};
 
   // handle all our movement key-presses. if we happen to touch the ground here, it will
   // figure it out and update `on_ground_`
@@ -92,62 +92,52 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   }
 
   // if we didn't hit ground due to movement, check if we're already on it
-  if (!on_ground_) {
-    update_on_ground();
-  }
+  update_on_ground();
 
   // if we still aren't on it, we apply gravity. otherwise, we stop the player
   if (!on_ground_ && jumping_for_n_frames_ == 0) {
-    player().set_color(glm::vec4{0.3f, 0.6f, 0.9f, 1.0f});
-    translate_player_by(DOWN);
-  }
-
-  if (on_ground_) 
-  {
-    if (keys_pressed.empty()) 
-    {
-      player().set_animation("idle");
-    } 
-    else 
-    {
-      player().set_animation("run");
-    }
-  } 
-  else if (player_velocity_.y > 0) 
-  {
-    player().set_animation("jump");
-  } 
-  else 
-  {
     player().set_animation("fall");
+    player_velocity_ += DOWN;
   }
 
-  player().update_animation(0.016f); // Assuming 60 FPS
+  // choose our next animation based on our velocity
+  if (player_velocity_.y > 0.0f) {
+    player().set_animation("jump");
+  } else if (player_velocity_.y < 0.0f) {
+    player().set_animation("fall");
+  } else if (std::fabs(player_velocity_.x) > 0.0f) {
+    player().set_animation("run");
+  } else {
+    player().set_animation("idle");
+  }
 
+  // if we're moving left/right at all (regardless of jump/fall), we update this
+  if (std::fabs(player_velocity_.x) > 0.0f) {
+    player().set_facing_left(player_velocity_.x < 0.0f);
+  }
+
+  translate_player_by(player_velocity_);
+  player().update_animation(); // Assuming 60 FPS
 }
 
 void Scene::handle_keypress(int key) noexcept {
-  auto translation = glm::vec3{};
-
   switch (key) {
   case GLFW_KEY_LEFT:
-    translation = LEFT;
+    player_velocity_ += LEFT;
     break;
   case GLFW_KEY_RIGHT:
-    translation = RIGHT;
+    player_velocity_ += RIGHT;
     break;
   case GLFW_KEY_DOWN:
-    translation = DOWN;
+    player_velocity_ += DOWN;
     break;
   case GLFW_KEY_UP:
-    translation = UP;
+    player_velocity_ += UP;
     jumping_for_n_frames_ = 1;
     break;
   default:
     return;
   }
-
-  translate_player_by(translation);
 }
 
 void Scene::translate_player_by(glm::vec3 translation) noexcept {
@@ -175,9 +165,6 @@ void Scene::translate_player_by(glm::vec3 translation) noexcept {
       player().translate(translation);
     }
   }
-
-  // std::cout << "player position is (" << player().position().x << ", "
-  //          << player().position().y << ")\n";
 
   view_matrix_ = glm::translate(view_matrix_, translation);
 }

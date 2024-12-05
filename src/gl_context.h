@@ -89,10 +89,16 @@ public:
   /// \param name The name of the shader
   GLuint use_program(const std::string& name) noexcept;
 
-  /// Creates a texture and loads it into OpenGL.
+  /// Creates a texture and loads it into OpenGL. The image path is used as the name.
   ///
-  /// \param name The name to give the texture
-  void create_texture(const std::string& name) noexcept;
+  /// \param path The path of the texture
+  void create_texture(const std::string& path) noexcept { create_texture(path, path); }
+
+  /// Creates a texture from a given image, and associates it with a name.
+  ///
+  /// \param name The name to associate with the texture
+  /// \param path The path to the image
+  void create_texture(const std::string& name, const std::string& path) noexcept;
 
   /// Loads a texture and binds it as the current one.
   ///

@@ -11,6 +11,8 @@
 
 GLuint GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
                                  const glm::mat4& view) noexcept {
+  gl.bind_vao(vao_name_);
+
   auto shader = gl.use_program(shader_name_);
   auto model = glm::translate(glm::mat4{1.0f}, -position_);
 
@@ -26,9 +28,8 @@ GLuint GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
 }
 
 void GameObject::draw(GLContext& gl) noexcept {
-  gl.bind_vao(vao_name_);
-
   glDrawArrays(GL_TRIANGLES, 0, vertex_count() * 3);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 NonUniqueGameObject::NonUniqueGameObject(glm::vec3 position, const char* object_name,

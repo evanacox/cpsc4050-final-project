@@ -208,11 +208,12 @@ GLuint GLContext::use_program(const std::string& name) noexcept {
   return program;
 }
 
-void GLContext::create_texture(const std::string& name) noexcept {
+void GLContext::create_texture(const std::string& name,
+                               const std::string& path) noexcept {
   auto tex = GLuint{};
   int width, height, channels;
 
-  auto* data = stbi_load(name.c_str(), &width, &height, &channels, 0);
+  auto* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
   glGenTextures(1, &tex);
   glBindTexture(GL_TEXTURE_2D, tex);

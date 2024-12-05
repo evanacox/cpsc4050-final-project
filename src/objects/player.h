@@ -10,26 +10,26 @@
 
 #include "../game_object.h"
 #include <array>
-#include <unordered_map>
-#include <vector>
-#include <string>
 #include <glm/glm.hpp>
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 
 /// Represents a single animation in the sprite sheet
-  struct Animation {
-      int frame_count;               // Total number of frames in the animation
-      int current_frame = 0;         // Index of the current frame (starts at 0)
-      float frame_time;              // Duration of each frame in seconds
-      float elapsed_time = 0.0f;     // Time elapsed since the last frame change
-      glm::vec2 frame_size;          // Size of each frame in UV coordinates (normalized)
-      std::vector<glm::vec2> uv_coords; // UV coordinates for all frames
-      std::string texture_name;      // Name of the associated texture
+struct Animation {
+  int frame_count = 0;              // Total number of frames in the animation
+  int current_frame = 0;            // Index of the current frame (starts at 0)
+  int elapsed_frames = 0;           // Time elapsed since the last frame change
+  glm::vec2 frame_size{};           // Size of each frame in UV coordinates (normalized)
+  std::vector<glm::vec2> uv_coords; // UV coordinates for all frames
+  std::string texture_name;         // Name of the associated texture
 
-      /// Constructor to initialize the animation
-      Animation(int frames, float time_per_frame, glm::vec2 size, const std::string& texture)
-        : frame_count(frames), frame_time(time_per_frame), frame_size(size), texture_name(texture) {}
-  };
+  Animation() = default;
 
+  /// Constructor to initialize the animation
+  Animation(int frames, glm::vec2 size, std::string texture) noexcept;
+};
 
 /// Models the player character
 class Player final : public UniqueGameObject {
@@ -47,23 +47,28 @@ public:
 
   [[nodiscard]] glm::vec2 dimensions() const noexcept { return glm::vec2{5.0f, 5.0f}; }
 
-  void set_color(glm::vec4 color) noexcept { color_ = color; }
-
-
   /// Updates the current animation frame based on elapsed time
-  void update_animation(float delta_time);
+  void update_animation() noexcept;
+
   /// Sets the current animation by name
   void set_animation(const std::string& anim_name);
 
+  /// When the player changes direction, the texture may need to be mirrored. This updates
+  /// the player's facing direction (either left or right)
+  ///
+  /// \param is_facing_left Whether the player is facing left
+  void set_facing_left(bool is_facing_left) noexcept { should_mirror_ = !is_facing_left; }
+
 private:
-  
-  glm::vec4 color_ = glm::vec4{0.0f};
-  GLuint uv_vbo;                                         // OpenGL buffer for UV coordinates
-  std::unordered_map<std::string, Animation> animations; // Map of animations by name
-  Animation* current_animation = nullptr;               // Pointer to the current animation
+  std::unordered_map<std::string, Animation> animations_; // Map of animations by name
+  Animation* current_animation_ = nullptr; // Pointer to the current animation
+  GLuint uv_vbo_{};                        // OpenGL buffer for UV coordinates
+  int current_frame_ = 0;                  // the current animation frame
+  bool update_uv_on_next_draw_ = false;
+  bool should_mirror_ = false;
 
   /// Loads animations into the player object
-  void load_animations();
+  void load_animations(GLContext& gl);
 
   /// Updates the UV buffer with the current animation frame
   void update_uv_buffer();
