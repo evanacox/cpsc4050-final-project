@@ -116,7 +116,12 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
     player().set_facing_left(player_velocity_.x < 0.0f);
   }
 
-  translate_player_by(player_velocity_);
+  // we do two translations (one horizontal, one vertical) to allow the player
+  // to collide in one direction but still move in another.
+  //
+  // ex: if player is holding UP and LEFT and collides on LEFT, we still want up
+  translate_player_by(glm::vec3{player_velocity_.x, 0.0f, 0.0f});
+  translate_player_by(glm::vec3{0.0f, player_velocity_.y, 0.0f});
   player().update_animation(); // Assuming 60 FPS
 }
 
