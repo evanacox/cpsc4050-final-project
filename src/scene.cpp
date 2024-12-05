@@ -38,27 +38,74 @@ void Scene::draw_everything(GLContext& gl, const glm::mat4& proj) noexcept {
 namespace {
 
 // this array has pairs of (center point, dimension). dimension = (width, height)
+// clang-format off
 auto backgrounds = std::array{
-    // clang-format off
-  // pair of ({center of the rectangle}, {x and y dimensions}, asset file to load for texture)
-  // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
-  std::tuple{glm::vec3{0.0f, -20.0f, 5.0f}, glm::vec2{300.0f, 200.0f}, "assets/backgrounds/1.png"},
-  std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
-  std::tuple{glm::vec3{0.0f, 15.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
-  std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
-  std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"} // clang-format on
+    // pair of ({center of the rectangle}, {x and y dimensions}, asset file to
+    // load for texture)
+    // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
+    std::tuple{glm::vec3{0.0f, -20.0f, 5.0f}, glm::vec2{300.0f, 250.0f}, "assets/backgrounds/1.png"},
+    std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
+    std::tuple{glm::vec3{0.0f, 15.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
+    std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
+    std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"}
+};
+// clang-format on
+
+// same structure here for the rectangular obstacles
+auto invisible_walls = std::array{
+    // pair of ({center of the rectangle}, {x and y dimensions})
+    std::pair{glm::vec3{-90.0f, 0.0f, 0.1f}, glm::vec2{1.0f, 500.0f}},
+    std::pair{glm::vec3{90.0f, 0.0f, 0.1f}, glm::vec2{1.0f, 500.0f}},
 };
 
 // same structure here for the rectangular obstacles
-auto invisible_walls =
-    std::array{// pair of ({center of the rectangle}, {x and y dimensions})
-               std::pair{glm::vec3{0.0f, -30.0f, 0.0f}, glm::vec2{250.0f, 10.0f}}};
-
-// same structure here for the rectangular obstacles
-auto textured_obstacles =
-    std::array{// pair of ({center of the rectangle}, {x and y dimensions})
-               std::tuple{glm::vec3{0.0f, 30.0f, 0.0f}, glm::vec2{250.0f, 10.0f},
-                          "assets/backgrounds/grass_2.png"}};
+// clang-format off
+auto textured_obstacles = std::array{
+    // pair of ({center of the rectangle}, {x and y dimensions})
+    std::tuple{
+      glm::vec3{0.0f, -32.5f, 0.0f},
+      glm::vec2{86.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{-120.0f, -32.5f, 0.0f},
+      glm::vec2{135.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{120.0f, -32.5f, 0.0f},
+      glm::vec2{135.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{-34.0f, -25.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{-40.0f, -25.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{-40.0f, -19.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{48.0f, -25.0f, 0.0f},
+      glm::vec2{24.0f, 6.0f},
+      glm::vec2{4.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+};
+// clang-format on
 
 constexpr auto LEFT = glm::vec3{-1.0f, 0.0f, 0.0f};
 constexpr auto RIGHT = glm::vec3{1.0f, 0.0f, 0.0f};
@@ -78,14 +125,13 @@ void Scene::create_scene() noexcept {
   obstacles_begin_ = objects_.size();
 
   for (const auto& [center, dimension] : invisible_walls) {
-    auto obstacle =
-        std::make_unique<Rectangle>(center, dimension, "assets/backgrounds/grass_2.png");
+    auto obstacle = std::make_unique<Rectangle>(center, dimension);
 
     objects_.push_back(std::move(obstacle));
   }
 
-  for (const auto& [center, dimension, texture] : textured_obstacles) {
-    auto obstacle = std::make_unique<Rectangle>(center, dimension, texture);
+  for (const auto& [center, dimension, tile_count, texture] : textured_obstacles) {
+    auto obstacle = std::make_unique<Rectangle>(center, dimension, tile_count, texture);
 
     objects_.push_back(std::move(obstacle));
   }

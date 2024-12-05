@@ -220,8 +220,8 @@ void GLContext::create_texture(const std::string& name,
 
   // set the texture to not allow coords outside [0.0, 1.0], otherwise return bright red
   auto color = std::array<float, 4>{1.0f, 0.0f, 0.0f, 1.0f};
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color.data());
 
   // clamp to nearest, gives a pixelated/retro look

@@ -25,6 +25,11 @@ void Rectangle::setup(GLContext& gl) noexcept {
   auto vertex = buf[0];
   auto uv = buf[1];
 
+  for (auto& value : buffers.uv_coords) {
+    value.x *= tile_count_.x;
+    value.y *= tile_count_.y;
+  }
+
   set_vertex_count(static_cast<int>(buffers.vertices.size()));
 
   gl.fill_enable_vbo(vertex, 0, buffers.vertices);
@@ -37,7 +42,7 @@ GLuint Rectangle::load_uniforms(GLContext& gl, const glm::mat4& proj,
   auto background_image = glGetUniformLocation(shader, "background_image");
   auto is_transparent = glGetUniformLocation(shader, "is_transparent");
 
-  if (is_transparent_) {
+  if (!is_transparent_) {
     gl.load_texture(texture_name());
   }
 
@@ -82,12 +87,7 @@ Collision Rectangle::collides_with(const Player& player,
   if (x_difference >= 0 && y_difference >= 0) {
     auto location = CollisionLocation{};
 
-    // hack: check if the bottom of the player is at/above the rectangle.
-    // if it is, and we're already colliding, we immediately go to "top"
-    // for the purpose of our gravity simulation
-    if (std::fabs(rect2.y) <= std::fabs(rect1.y + rect1.h + translation.y)) {
-      location = CollisionLocation::top;
-    } else if (cross_width > cross_height) {
+    if (cross_width > cross_height) {
       location = (cross_width > -cross_height) ? CollisionLocation::bottom
                                                : CollisionLocation::right;
     } else {

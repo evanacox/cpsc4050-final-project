@@ -25,10 +25,10 @@ public:
       : NonUniqueGameObject(center, "rectangle", ""), dimension_{dimension},
         is_transparent_{true} {}
 
-  explicit Rectangle(glm::vec3 center, glm::vec2 dimension,
+  explicit Rectangle(glm::vec3 center, glm::vec2 dimension, glm::vec2 tile_count,
                      const char* texture_name) noexcept
       : NonUniqueGameObject(center, "rectangle", texture_name), dimension_{dimension},
-        is_transparent_{false} {}
+        is_transparent_{false}, tile_count_{tile_count} {}
 
   void setup(GLContext& gl) noexcept override;
 
@@ -46,6 +46,7 @@ public:
 private:
   glm::vec2 dimension_;
   bool is_transparent_;
+  glm::vec2 tile_count_ = glm::vec2{0.0f};
 };
 
 #endif // PROJECT_RECTANGLE_H
