@@ -208,19 +208,20 @@ GLuint GLContext::use_program(const std::string& name) noexcept {
   return program;
 }
 
-void GLContext::create_texture(const std::string& name) noexcept {
+void GLContext::create_texture(const std::string& name,
+                               const std::string& path) noexcept {
   auto tex = GLuint{};
   int width, height, channels;
 
-  auto* data = stbi_load(name.c_str(), &width, &height, &channels, 0);
+  auto* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
   glGenTextures(1, &tex);
   glBindTexture(GL_TEXTURE_2D, tex);
 
   // set the texture to not allow coords outside [0.0, 1.0], otherwise return bright red
   auto color = std::array<float, 4>{1.0f, 0.0f, 0.0f, 1.0f};
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color.data());
 
   // clamp to nearest, gives a pixelated/retro look

@@ -38,22 +38,74 @@ void Scene::draw_everything(GLContext& gl, const glm::mat4& proj) noexcept {
 namespace {
 
 // this array has pairs of (center point, dimension). dimension = (width, height)
+// clang-format off
 auto backgrounds = std::array{
-    // clang-format off
-  // pair of ({center of the rectangle}, {x and y dimensions}, asset file to load for texture)
-  // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
-  std::tuple{glm::vec3{0.0f, -20.0f, 5.0f}, glm::vec2{300.0f, 200.0f}, "assets/backgrounds/1.png"},
-  std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
-  std::tuple{glm::vec3{0.0f, 15.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
-  std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
-  std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"}
-    // clang-format on
+    // pair of ({center of the rectangle}, {x and y dimensions}, asset file to
+    // load for texture)
+    // NOTE THAT THESE ARE IN BACK TO FRONT ORDER!!!!
+    std::tuple{glm::vec3{0.0f, -20.0f, 5.0f}, glm::vec2{300.0f, 250.0f}, "assets/backgrounds/1.png"},
+    std::tuple{glm::vec3{0.0f, -10.0f, 3.0f}, glm::vec2{300.0f, 160.0f}, "assets/backgrounds/2.png"},
+    std::tuple{glm::vec3{0.0f, 15.0f, 1.5f}, glm::vec2{300.0f, 120.0f}, "assets/backgrounds/3.png"},
+    std::tuple{glm::vec3{-75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"},
+    std::tuple{glm::vec3{75.0f, 10.0f, 0.5f}, glm::vec2{150.0f, 80.0f}, "assets/backgrounds/4.png"}
+};
+// clang-format on
+
+// same structure here for the rectangular obstacles
+auto invisible_walls = std::array{
+    // pair of ({center of the rectangle}, {x and y dimensions})
+    std::pair{glm::vec3{-90.0f, 0.0f, 0.1f}, glm::vec2{1.0f, 500.0f}},
+    std::pair{glm::vec3{90.0f, 0.0f, 0.1f}, glm::vec2{1.0f, 500.0f}},
 };
 
 // same structure here for the rectangular obstacles
-auto obstacles =
-    std::array{// pair of ({center of the rectangle}, {x and y dimensions})
-               std::pair{glm::vec3{0.0f, -30.0f, 0.0f}, glm::vec2{250.0f, 10.0f}}};
+// clang-format off
+auto textured_obstacles = std::array{
+    // pair of ({center of the rectangle}, {x and y dimensions})
+    std::tuple{
+      glm::vec3{0.0f, -32.5f, 0.0f},
+      glm::vec2{86.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{-120.0f, -32.5f, 0.0f},
+      glm::vec2{135.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{120.0f, -32.5f, 0.0f},
+      glm::vec2{135.0f, 10.0f},
+      glm::vec2{8.0f, 1.0f},
+      "assets/backgrounds/dirt.png"
+    },
+    std::tuple{
+      glm::vec3{-34.0f, -25.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{-40.0f, -25.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{-40.0f, -19.0f, 0.0f},
+      glm::vec2{6.0f, 6.0f},
+      glm::vec2{1.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+    std::tuple{
+      glm::vec3{48.0f, -25.0f, 0.0f},
+      glm::vec2{24.0f, 6.0f},
+      glm::vec2{4.0f, 1.0f},
+      "assets/backgrounds/brick.png"
+    },
+};
+// clang-format on
 
 constexpr auto LEFT = glm::vec3{-1.0f, 0.0f, 0.0f};
 constexpr auto RIGHT = glm::vec3{1.0f, 0.0f, 0.0f};
@@ -72,8 +124,14 @@ void Scene::create_scene() noexcept {
 
   obstacles_begin_ = objects_.size();
 
-  for (const auto& [center, dimension] : obstacles) {
+  for (const auto& [center, dimension] : invisible_walls) {
     auto obstacle = std::make_unique<Rectangle>(center, dimension);
+
+    objects_.push_back(std::move(obstacle));
+  }
+
+  for (const auto& [center, dimension, tile_count, texture] : textured_obstacles) {
+    auto obstacle = std::make_unique<Rectangle>(center, dimension, tile_count, texture);
 
     objects_.push_back(std::move(obstacle));
   }
@@ -83,9 +141,8 @@ void Scene::create_scene() noexcept {
 
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
-  jumping_for_n_frames_ = 0;
-
-  player().set_color(glm::vec4{0.7f, 0.3f, 0.6f, 1.0f});
+  jumped_this_frame_ = false;
+  player_velocity_ = glm::vec3{0.0f};
 
   // handle all our movement key-presses. if we happen to touch the ground here, it will
   // figure it out and update `on_ground_`
@@ -94,39 +151,68 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   }
 
   // if we didn't hit ground due to movement, check if we're already on it
-  if (!on_ground_) {
-    update_on_ground();
-  }
+  update_on_ground();
 
   // if we still aren't on it, we apply gravity. otherwise, we stop the player
-  if (!on_ground_ && jumping_for_n_frames_ == 0) {
-    player().set_color(glm::vec4{0.3f, 0.6f, 0.9f, 1.0f});
-    translate_player_by(DOWN);
+  if (!on_ground_ && !jumped_this_frame_) {
+    player().set_animation("fall");
+    player_velocity_ += DOWN;
   }
+
+  // choose our next animation based on our velocity
+  if (player_velocity_.y > 0.0f) {
+    player().set_animation("jump");
+  } else if (player_velocity_.y < 0.0f) {
+    player().set_animation("fall");
+  } else if (std::fabs(player_velocity_.x) > 0.0f) {
+    player().set_animation("run");
+  } else {
+    player().set_animation("idle");
+  }
+
+  // if we're moving left/right at all (regardless of jump/fall), we update this
+  if (std::fabs(player_velocity_.x) > 0.0f) {
+    player().set_facing_left(player_velocity_.x < 0.0f);
+  }
+
+  // we do two translations (one horizontal, one vertical) to allow the player
+  // to collide in one direction but still move in another.
+  //
+  // ex: if player is holding UP and LEFT and collides on LEFT, we still want up
+  translate_player_by(glm::vec3{player_velocity_.x, 0.0f, 0.0f});
+  translate_player_by(glm::vec3{0.0f, player_velocity_.y, 0.0f});
+
+  if (on_ground_) {
+    jumping_for_n_frames_ = 0;
+  }
+
+  player().update_animation(); // Assuming 60 FPS
 }
 
 void Scene::handle_keypress(int key) noexcept {
-  auto translation = glm::vec3{};
-
   switch (key) {
   case GLFW_KEY_LEFT:
-    translation = LEFT;
+    player_velocity_ += LEFT;
     break;
   case GLFW_KEY_RIGHT:
-    translation = RIGHT;
+    player_velocity_ += RIGHT;
     break;
   case GLFW_KEY_DOWN:
-    translation = DOWN;
+    player_velocity_ += DOWN;
     break;
-  case GLFW_KEY_UP:
-    translation = UP;
-    jumping_for_n_frames_ = 1;
+  case GLFW_KEY_UP: {
+    if (jumping_for_n_frames_ == 15) {
+      jumping_for_n_frames_ = -1;
+    } else if (jumping_for_n_frames_ != -1) {
+      player_velocity_ += UP;
+      jumping_for_n_frames_ += 1;
+      jumped_this_frame_ = true;
+    }
     break;
+  }
   default:
     return;
   }
-
-  translate_player_by(translation);
 }
 
 void Scene::translate_player_by(glm::vec3 translation) noexcept {
@@ -154,9 +240,6 @@ void Scene::translate_player_by(glm::vec3 translation) noexcept {
       player().translate(translation);
     }
   }
-
-  // std::cout << "player position is (" << player().position().x << ", "
-  //          << player().position().y << ")\n";
 
   view_matrix_ = glm::translate(view_matrix_, translation);
 }
