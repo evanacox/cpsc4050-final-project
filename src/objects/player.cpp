@@ -90,7 +90,7 @@ void Player::update_animation() noexcept {
   current_animation_->elapsed_frames += 1;
 
   // If enough time has passed, move to the next frame
-  if (current_animation_->elapsed_frames >= current_animation_->frame_count) {
+  if (current_animation_->elapsed_frames >= 3) {
     current_animation_->elapsed_frames = 0; // Reset elapsed time
     current_animation_->current_frame =
         (current_animation_->current_frame + 1) % current_animation_->frame_count;
