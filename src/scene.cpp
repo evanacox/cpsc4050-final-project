@@ -157,6 +157,9 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   if (!on_ground_ && !jumped_this_frame_) {
     player().set_animation("fall");
     player_velocity_ += DOWN;
+
+    // disallow jumping until we hit the ground
+    jumping_for_n_frames_ = -1;
   }
 
   // choose our next animation based on our velocity
@@ -182,6 +185,7 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   translate_player_by(glm::vec3{player_velocity_.x, 0.0f, 0.0f});
   translate_player_by(glm::vec3{0.0f, player_velocity_.y, 0.0f});
 
+  // if we hit the ground, we can jump again
   if (on_ground_) {
     jumping_for_n_frames_ = 0;
   }
@@ -201,7 +205,8 @@ void Scene::handle_keypress(int key) noexcept {
     player_velocity_ += DOWN;
     break;
   case GLFW_KEY_UP: {
-    if (jumping_for_n_frames_ == 15) {
+    // max cap of 30 frames worth of jump height
+    if (jumping_for_n_frames_ == 17) {
       jumping_for_n_frames_ = -1;
     } else if (jumping_for_n_frames_ != -1) {
       player_velocity_ += UP;
@@ -222,7 +227,7 @@ void Scene::translate_player_by(glm::vec3 translation) noexcept {
     // we know this is safe, every obstacle is a rectangle
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
-    auto [location, amount_less_to_move] = rect.collides_with(player(), translation);
+    auto [location, amount_less_to_move] = rect.collides_with(player());
 
     if (location != CollisionLocation::none && amount_less_to_move != 0.0f) {
       // undo our original translation, because it collides
@@ -248,7 +253,7 @@ void Scene::update_on_ground() noexcept {
   for (auto i = obstacles_begin_; i < objects_.size() - 1; ++i) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
     auto& rect = static_cast<Rectangle&>(*objects_[i]);
-    auto [location, _] = rect.collides_with(player(), glm::vec3{0.0f});
+    auto [location, _] = rect.collides_with(player());
 
     if (location == CollisionLocation::top) {
       on_ground_ = true;

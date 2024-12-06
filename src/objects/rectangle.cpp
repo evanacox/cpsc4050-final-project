@@ -71,8 +71,7 @@ RectangleProps rect_from_pos_dimensions(glm::vec3 position,
 
 } // namespace
 
-Collision Rectangle::collides_with(const Player& player,
-                                   glm::vec3 translation) const noexcept {
+Collision Rectangle::collides_with(const Player& player) const noexcept {
   auto rect1 = rect_from_pos_dimensions(position(), dimension_);
   auto rect2 = rect_from_pos_dimensions(player.position(), player.dimensions());
   auto dx = (rect1.x + rect1.w / 2.0f) - (rect2.x + rect2.w / 2.0f);

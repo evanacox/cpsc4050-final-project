@@ -38,10 +38,8 @@ public:
   /// Returns which part of `this` is colliding with `player`, if any
   ///
   /// \param player The player being compared to
-  /// \param translation The translation that just got applied, used for corners
   /// \return The side of `this` colliding with `player`
-  [[nodiscard]] Collision collides_with(const Player& player,
-                                        glm::vec3 translation) const noexcept;
+  [[nodiscard]] Collision collides_with(const Player& player) const noexcept;
 
 private:
   glm::vec2 dimension_;

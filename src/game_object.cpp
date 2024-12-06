@@ -27,7 +27,7 @@ GLuint GameObject::load_uniforms(GLContext& gl, const glm::mat4& proj,
   return shader;
 }
 
-void GameObject::draw(GLContext& gl) noexcept {
+void GameObject::draw(GLContext&) noexcept {
   glDrawArrays(GL_TRIANGLES, 0, vertex_count() * 3);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
