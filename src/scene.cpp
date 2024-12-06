@@ -141,7 +141,7 @@ void Scene::create_scene() noexcept {
 
 void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   on_ground_ = false;
-  jumping_for_n_frames_ = 0;
+  jumped_this_frame_ = false;
   player_velocity_ = glm::vec3{0.0f};
 
   // handle all our movement key-presses. if we happen to touch the ground here, it will
@@ -154,7 +154,7 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   update_on_ground();
 
   // if we still aren't on it, we apply gravity. otherwise, we stop the player
-  if (!on_ground_ && jumping_for_n_frames_ == 0) {
+  if (!on_ground_ && !jumped_this_frame_) {
     player().set_animation("fall");
     player_velocity_ += DOWN;
   }
@@ -181,6 +181,11 @@ void Scene::update_scene(const std::vector<int>& keys_pressed) noexcept {
   // ex: if player is holding UP and LEFT and collides on LEFT, we still want up
   translate_player_by(glm::vec3{player_velocity_.x, 0.0f, 0.0f});
   translate_player_by(glm::vec3{0.0f, player_velocity_.y, 0.0f});
+
+  if (on_ground_) {
+    jumping_for_n_frames_ = 0;
+  }
+
   player().update_animation(); // Assuming 60 FPS
 }
 
@@ -195,10 +200,16 @@ void Scene::handle_keypress(int key) noexcept {
   case GLFW_KEY_DOWN:
     player_velocity_ += DOWN;
     break;
-  case GLFW_KEY_UP:
-    player_velocity_ += UP;
-    jumping_for_n_frames_ = 1;
+  case GLFW_KEY_UP: {
+    if (jumping_for_n_frames_ == 15) {
+      jumping_for_n_frames_ = -1;
+    } else if (jumping_for_n_frames_ != -1) {
+      player_velocity_ += UP;
+      jumping_for_n_frames_ += 1;
+      jumped_this_frame_ = true;
+    }
     break;
+  }
   default:
     return;
   }
